@@ -1,4 +1,9 @@
+"use client";
+
 import { chats } from "@/data/chats";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import ChatListItem from "./ChatListItem";
 
 interface ChatSidebarProps {
@@ -17,7 +22,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.3-4.3" />
         </svg>
-        <input
+        <Input
           type="text"
           className="chat-search__input"
           placeholder="Search"
@@ -26,7 +31,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
       </div>
 
       {/* Scrollable list */}
-      <div className="chat-sidebar__list">
+      <ScrollArea className="chat-sidebar__scroll-area">
         {/* Groups */}
         <div className="chat-section">
           <h3 className="chat-section__title">Groups</h3>
@@ -41,6 +46,8 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
           </div>
         </div>
 
+        <Separator className="chat-section-separator" />
+
         {/* Person */}
         <div className="chat-section">
           <h3 className="chat-section__title">Person</h3>
@@ -54,7 +61,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
             ))}
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </aside>
   );
 }

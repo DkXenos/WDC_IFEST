@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Chats Page — Glassmorphism relaxation study vibe
    Palette: #F0D9C7  #C7DCC4  #DDEFDF  #D0E7D2  #DADBC6
+   Uses shadcn/ui: Avatar, Button, Input, ScrollArea, Badge, Tooltip, Separator
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Variables ─────────────────────────────────────────────────────────── */
@@ -61,44 +62,31 @@
   border-right: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.chat-nav__avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage), var(--soft-green));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 16px;
+/* shadcn Avatar override for nav */
+.chat-nav [data-slot="avatar"] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+/* shadcn Button overrides for nav */
 .chat-nav__btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
 }
 
 .chat-nav__btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: var(--text-primary) !important;
   transform: scale(1.05);
 }
 
 .chat-nav__btn--active {
-  background: rgba(255, 255, 255, 0.3);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: var(--text-primary) !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
@@ -124,40 +112,44 @@
   flex-shrink: 0;
 }
 
+/* shadcn Input override for search */
 .chat-search__input {
-  flex: 1;
-  border: none;
-  background: rgba(218, 219, 198, 0.35);
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-size: 14px;
-  color: var(--text-primary);
-  outline: none;
-  transition: background 0.2s ease;
+  flex: 1 !important;
+  height: 40px !important;
+  border: none !important;
+  background: rgba(218, 219, 198, 0.35) !important;
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  transition: background 0.2s ease !important;
 }
 
 .chat-search__input::placeholder {
-  color: var(--text-muted);
+  color: var(--text-muted) !important;
 }
 
 .chat-search__input:focus {
-  background: rgba(218, 219, 198, 0.5);
+  background: rgba(218, 219, 198, 0.5) !important;
+  box-shadow: none !important;
+  border: none !important;
+  --tw-ring-shadow: none !important;
 }
 
-.chat-sidebar__list {
+/* shadcn ScrollArea for sidebar */
+.chat-sidebar__scroll-area {
   flex: 1;
-  overflow-y: auto;
-  padding: 4px 16px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.12) transparent;
+  overflow: hidden;
 }
 
-.chat-sidebar__list::-webkit-scrollbar {
-  width: 4px;
+.chat-sidebar__scroll-area [data-slot="scroll-area-viewport"] {
+  padding: 4px 16px 16px;
 }
-.chat-sidebar__list::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.12);
-  border-radius: 4px;
+
+/* shadcn Separator override */
+.chat-section-separator {
+  background: rgba(255, 255, 255, 0.25) !important;
+  margin: 4px 0 !important;
 }
 
 /* ── Chat sections ─────────────────────────────────────────────────────── */
@@ -206,22 +198,13 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
-.chat-list-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
+/* shadcn Avatar inside list items — remove the border overlay */
+.chat-list-item [data-slot="avatar"] {
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
-.chat-list-avatar__initials {
-  letter-spacing: 0.5px;
+.chat-list-item [data-slot="avatar"]::after {
+  display: none;
 }
 
 .chat-list-info {
@@ -262,19 +245,18 @@
   text-overflow: ellipsis;
 }
 
-.chat-list-unread {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #5a8a5e, #6a9b6e);
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+/* shadcn Badge override for unread count */
+.chat-list-unread-badge {
+  min-width: 22px;
+  height: 22px !important;
+  border-radius: 50% !important;
+  padding: 0 6px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #5a8a5e, #6a9b6e) !important;
+  color: white !important;
   box-shadow: 0 2px 6px rgba(90, 138, 94, 0.3);
+  flex-shrink: 0;
 }
 
 /* ── Conversation panel ────────────────────────────────────────────────── */
@@ -303,17 +285,13 @@
   gap: 14px;
 }
 
-.chat-conv-header__avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
+/* shadcn Avatar in header — remove border overlay */
+.chat-conv-header [data-slot="avatar"] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.chat-conv-header [data-slot="avatar"]::after {
+  display: none;
 }
 
 .chat-conv-header__info {
@@ -340,44 +318,33 @@
   gap: 4px;
 }
 
+/* shadcn Button overrides for header actions */
 .chat-conv-header__btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  border-radius: 10px !important;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
 }
 
 .chat-conv-header__btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: var(--text-primary) !important;
   transform: scale(1.08);
 }
 
 /* ── Messages area ─────────────────────────────────────────────────────── */
-.chat-conv-messages {
+/* shadcn ScrollArea for messages */
+.chat-conv-scroll-area {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.chat-conv-messages {
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.08) transparent;
-}
-
-.chat-conv-messages::-webkit-scrollbar {
-  width: 4px;
-}
-.chat-conv-messages::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.08);
-  border-radius: 4px;
 }
 
 .chat-conv-date {
@@ -386,13 +353,15 @@
   padding: 8px 0 4px;
 }
 
-.chat-conv-date span {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: rgba(208, 231, 210, 0.6);
-  padding: 4px 16px;
-  border-radius: 20px;
+/* shadcn Badge override for date */
+.chat-conv-date__badge {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  background: rgba(208, 231, 210, 0.6) !important;
+  padding: 4px 16px !important;
+  border-radius: 20px !important;
+  height: auto !important;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -488,61 +457,55 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
+/* shadcn Button overrides for input bar actions */
 .chat-conv-input__btn {
-  width: 38px;
-  height: 38px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+  border-radius: 10px !important;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
   flex-shrink: 0;
 }
 
 .chat-conv-input__btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: var(--text-primary) !important;
   transform: scale(1.08);
 }
 
+/* shadcn Input override for message field */
 .chat-conv-input__field {
-  flex: 1;
-  border: none;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 14px;
-  padding: 11px 18px;
-  font-size: 14px;
-  color: var(--text-primary);
-  outline: none;
-  transition: background 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  flex: 1 !important;
+  height: 42px !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-radius: 14px !important;
+  padding: 11px 18px !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  transition: background 0.2s ease !important;
 }
 
 .chat-conv-input__field::placeholder {
-  color: var(--text-muted);
+  color: var(--text-muted) !important;
 }
 
 .chat-conv-input__field:focus {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(208, 231, 210, 0.6);
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(208, 231, 210, 0.6) !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: none !important;
 }
 
+/* shadcn Button override for send */
 .chat-conv-input__send {
-  width: 42px;
-  height: 42px;
-  border: none;
-  background: linear-gradient(135deg, #5a8a5e, #6a9b6e);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  transition: all 0.2s ease;
+  width: 42px !important;
+  height: 42px !important;
+  border: none !important;
+  background: linear-gradient(135deg, #5a8a5e, #6a9b6e) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(90, 138, 94, 0.3);
 }
@@ -573,7 +536,7 @@
     overflow-x: auto;
   }
 
-  .chat-nav__avatar {
+  .chat-nav [data-slot="avatar"] {
     margin-bottom: 0;
     margin-right: 8px;
   }
