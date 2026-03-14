@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import "./globals.css";
+import "./../globals.css"
 import { cn } from "@/lib/utils";
 import NavigationBar from "@/components/common/main/NavigationBar";
+import Dock from "@/components/common/main/Dock";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <NavigationBar />
         {children}
+        <Dock />
       </body>
     </html>
   );
