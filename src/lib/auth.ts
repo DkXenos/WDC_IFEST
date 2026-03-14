@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql", // sesuaikan dengan database yang kamu pakai
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // <-- Kunci untuk login tanpa verifikasi
+    requireEmailVerification: false
   },
 });
