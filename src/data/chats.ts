@@ -4,6 +4,7 @@ export interface ChatUser {
   id: string;
   name: string;
   initials: string;
+  avatarUrl?: string; // We'll keep color fallback if no URL
   avatarColor: string;
   online?: boolean;
   lastSeen?: string;
@@ -32,273 +33,141 @@ export interface Chat {
 
 export const currentUser: ChatUser = {
   id: "me",
-  name: "You",
-  initials: "YO",
+  name: "Zyy",
+  initials: "ZY",
   avatarColor: "#6B8E7B",
+  avatarUrl: "https://i.pravatar.cc/150?u=zyy", // Dummy avatar for self
 };
 
 export const users: Record<string, ChatUser> = {
-  wealth: {
-    id: "wealth",
-    name: "Wealth",
-    initials: "WE",
-    avatarColor: "#D4A574",
+  riyu: {
+    id: "riyu",
+    name: "Riyu",
+    initials: "RY",
+    avatarColor: "#809bb9",
     online: true,
-    lastSeen: "2:45pm",
+    lastSeen: "Online",
+    avatarUrl: "https://i.pravatar.cc/150?img=11", 
   },
-  amarae: {
-    id: "amarae",
-    name: "Amarae",
-    initials: "AM",
-    avatarColor: "#7BA3B8",
+  zhonglong: {
+    id: "zhonglong",
+    name: "Zhonglong",
+    initials: "ZH",
+    avatarColor: "#b89c72",
     online: false,
-    lastSeen: "1:20pm",
+    lastSeen: "Ultima vez online: 5 dia(s)",
+    avatarUrl: "https://i.pravatar.cc/150?img=12",
   },
-  blessing: {
-    id: "blessing",
-    name: "Blessing",
+  kafka: {
+    id: "kafka",
+    name: "Kafka",
+    initials: "KF",
+    avatarColor: "#6e4a68",
+    online: true,
+    lastSeen: "Online",
+  },
+  blade: {
+    id: "blade",
+    name: "Blade",
     initials: "BL",
-    avatarColor: "#B89B7A",
-    online: true,
-    lastSeen: "10:02am",
-  },
-  tee: {
-    id: "tee",
-    name: "Tee",
-    initials: "TE",
-    avatarColor: "#8B7BAA",
+    avatarColor: "#47515a",
     online: false,
-    lastSeen: "Yesterday, 10:45pm",
-  },
-  kira: {
-    id: "kira",
-    name: "Kira",
-    initials: "KI",
-    avatarColor: "#A3B87B",
-  },
-  jake: {
-    id: "jake",
-    name: "Jake",
-    initials: "JK",
-    avatarColor: "#B87B8E",
+    lastSeen: "10 hours ago",
   },
 };
 
 // ─── Chats ────────────────────────────────────────────────────────────────────
 
 export const chats: Chat[] = [
-  // ── Groups ────────────────────────────────────────────────────────────────
-  {
-    id: "group-internship",
-    type: "group",
-    name: "Kingplus Internship Team",
-    participants: [users.wealth, users.blessing, users.kira],
-    lastMessage: "On my way",
-    lastMessageTime: "Today, 2:45pm",
-    messages: [
-      {
-        id: "gi-1",
-        senderId: "kira",
-        text: "Hey team, are we still meeting at 3?",
-        time: "2:30pm",
-      },
-      {
-        id: "gi-2",
-        senderId: "blessing",
-        text: "Yeah I'll be there in 10",
-        time: "2:32pm",
-      },
-      {
-        id: "gi-3",
-        senderId: "me",
-        text: "On my way",
-        time: "2:45pm",
-        read: true,
-      },
-    ],
-  },
-  {
-    id: "group-fun",
-    type: "group",
-    name: "Just fun",
-    participants: [users.amarae, users.tee, users.jake],
-    lastMessage: "Yo ...what are you guys up to?",
-    lastMessageTime: "Yesterday, 12:45pm",
-    unread: 1,
-    messages: [
-      {
-        id: "gf-1",
-        senderId: "jake",
-        text: "Anyone up for games tonight?",
-        time: "12:30pm",
-      },
-      {
-        id: "gf-2",
-        senderId: "tee",
-        text: "Count me in!",
-        time: "12:35pm",
-      },
-      {
-        id: "gf-3",
-        senderId: "amarae",
-        text: "Yo ...what are you guys up to?",
-        time: "12:45pm",
-      },
-    ],
-  },
-
   // ── Person ────────────────────────────────────────────────────────────────
   {
-    id: "person-amarae",
+    id: "person-riyu",
     type: "person",
-    name: "Amarae",
-    participants: [users.amarae],
-    lastMessage: "Are you coming today?",
-    lastMessageTime: "Today, 2:45pm",
-    unread: 1,
+    name: "Riyu",
+    participants: [users.riyu],
+    lastMessage: "Which means...",
+    lastMessageTime: "Today",
     messages: [
       {
-        id: "pa-1",
-        senderId: "amarae",
-        text: "Hey! How's it going?",
-        time: "1:00pm",
-      },
-      {
-        id: "pa-2",
+        id: "msg-1",
         senderId: "me",
-        text: "Pretty good, just finishing up some work",
-        time: "1:15pm",
-        read: true,
+        text: "My sanity has ran out. I cannot do this anymore.",
+        time: "10:15am",
       },
       {
-        id: "pa-3",
-        senderId: "amarae",
-        text: "Are you coming today?",
-        time: "2:45pm",
+        id: "msg-2",
+        senderId: "me",
+        text: "Firefly refuses to come home.",
+        time: "10:16am",
+      },
+      {
+        id: "msg-3",
+        senderId: "me",
+        text: "I have approximatly 6 days to get her",
+        time: "10:17am",
+      },
+      {
+        id: "msg-4",
+        senderId: "me",
+        text: "with 38 pulls left to get a *******nted Firefly",
+        time: "10:18am",
+      },
+      {
+        id: "msg-5",
+        senderId: "me",
+        text: "Which means",
+        time: "10:20am",
+      },
+      {
+        id: "msg-6",
+        senderId: "me",
+        text: "6080 gems...",
+        time: "10:21am",
       },
     ],
   },
   {
-    id: "person-wealth",
+    id: "person-zhonglong",
     type: "person",
-    name: "Wealth",
-    participants: [users.wealth],
-    lastMessage: "Because I'm sitting at the back",
-    lastMessageTime: "Today, 2:45pm",
+    name: "Zhonglong",
+    participants: [users.zhonglong],
+    lastMessage: "Hey, check out this build.",
+    lastMessageTime: "5 days ago",
+    unread: 2,
     messages: [
       {
-        id: "pw-1",
-        senderId: "wealth",
-        text: "What's up?",
-        time: "2:19pm",
-        read: true,
+        id: "zl-1",
+        senderId: "zhonglong",
+        text: "Hey, check out this build.",
+        time: "2:00pm",
       },
       {
-        id: "pw-2",
-        senderId: "me",
-        text: "Good you?",
-        time: "2:25pm",
-        read: true,
-      },
-      {
-        id: "pw-3",
-        senderId: "wealth",
-        text: "I'm fine",
-        time: "2:31pm",
-        read: true,
-      },
-      {
-        id: "pw-4",
-        senderId: "wealth",
-        text: "What you up to?",
-        time: "2:31pm",
-        read: true,
-      },
-      {
-        id: "pw-5",
-        senderId: "me",
-        text: "I'm in class",
-        time: "2:35pm",
-        read: true,
-      },
-      {
-        id: "pw-6",
-        senderId: "wealth",
-        text: "Hahaha ...and u are texting",
-        time: "2:40pm",
-        read: true,
-      },
-      {
-        id: "pw-7",
-        senderId: "me",
-        text: "Yup",
-        time: "2:42pm",
-        read: true,
-      },
-      {
-        id: "pw-8",
-        senderId: "me",
-        text: "Because I'm sitting at the back",
-        time: "2:45pm",
-        read: true,
+        id: "zl-2",
+        senderId: "zhonglong",
+        text: "It deals massive damage in simulated universe.",
+        time: "2:01pm",
       },
     ],
   },
   {
-    id: "person-blessing",
-    type: "person",
-    name: "Blessing",
-    participants: [users.blessing],
-    lastMessage: "I saw the girl this morning",
-    lastMessageTime: "Today, 10:02am",
+    id: "group-stellaron",
+    type: "group",
+    name: "Stellaron Hunters",
+    participants: [users.kafka, users.blade],
+    lastMessage: "Mission accomplished.",
+    lastMessageTime: "Yesterday",
     messages: [
       {
-        id: "pb-1",
-        senderId: "blessing",
-        text: "Good morning!",
-        time: "9:45am",
+        id: "sh-1",
+        senderId: "kafka",
+        text: "Is everyone ready?",
+        time: "8:00pm",
       },
       {
-        id: "pb-2",
-        senderId: "me",
-        text: "Morning Blessing!",
-        time: "9:50am",
-        read: true,
-      },
-      {
-        id: "pb-3",
-        senderId: "blessing",
-        text: "I saw the girl this morning",
-        time: "10:02am",
-      },
-    ],
-  },
-  {
-    id: "person-tee",
-    type: "person",
-    name: "Tee",
-    participants: [users.tee],
-    lastMessage: "I think I'm coming back next week",
-    lastMessageTime: "Yesterday, 10:45pm",
-    messages: [
-      {
-        id: "pt-1",
-        senderId: "tee",
-        text: "Hey, long time no see!",
-        time: "10:20pm",
-      },
-      {
-        id: "pt-2",
-        senderId: "me",
-        text: "I know right! When are you coming back?",
-        time: "10:30pm",
-        read: true,
-      },
-      {
-        id: "pt-3",
-        senderId: "tee",
-        text: "I think I'm coming back next week",
-        time: "10:45pm",
+        id: "sh-2",
+        senderId: "blade",
+        text: "Mission accomplished.",
+        time: "9:00pm",
       },
     ],
   },
@@ -306,8 +175,8 @@ export const chats: Chat[] = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Returns the active conversation data (Wealth chat) */
-export const activeChat = chats.find((c) => c.id === "person-wealth")!;
+/** Returns the active conversation data (Riyu chat) */
+export const activeChat = chats.find((c) => c.id === "person-riyu")!;
 
 /** Returns the user object for a given chat */
 export function getChatUser(chat: Chat): ChatUser {
