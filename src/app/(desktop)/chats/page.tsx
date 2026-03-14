@@ -9,8 +9,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ChatSidebar from "@/components/chats/ChatSidebar";
-import ChatConversation from "@/components/chats/ChatConversation";
+import ChatSidebar from "@/components/common/chats/ChatSidebar";
+import ChatConversation from "@/components/common/chats/ChatConversation";
 import "./chats.css";
 
 export default function ChatsPage() {
