@@ -8,6 +8,11 @@ type ChatThemeContextType = {
   setIsDarkTheme: (v: boolean) => void;
   setIsBlurOn: (v: boolean) => void;
 
+  activeVideoId: string;
+  setActiveVideoId: (id: string) => void;
+  unlockedVideos: string[];
+  setUnlockedVideos: (ids: string[]) => void;
+
   containerBg: string; // Nav strip, main content bg
   panelBg: string; // sidebar, input bar, headers
   borderColor: string;
@@ -24,6 +29,10 @@ export const ChatThemeContext = createContext<ChatThemeContextType | null>(null)
 export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isBlurOn, setIsBlurOn] = useState(true);
+  
+  // Video Backgrounds State
+  const [activeVideoId, setActiveVideoId] = useState('o4qjk8_5gmU');
+  const [unlockedVideos, setUnlockedVideos] = useState<string[]>(['o4qjk8_5gmU']); // The chilling cat default is unlocked
 
   // When blur is off, make backgrounds highly opaque to preserve text readability
   const containerBg = isDarkTheme
@@ -45,6 +54,7 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   return (
     <ChatThemeContext.Provider value={{
       isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn,
+      activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos,
       containerBg, panelBg, borderColor, textColor, mutedTextColor, hoverBg, activeBg, emeraldBg, emeraldText
     }}>
       {children}

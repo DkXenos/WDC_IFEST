@@ -58,7 +58,7 @@ export default function ChatsPage() {
 }
 
 function ChatsPageContent() {
-  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor } = useChatTheme();
+  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, activeVideoId } = useChatTheme();
   const [isVideoOn, setIsVideoOn] = useState(true);
   
   // Navigation State
@@ -79,7 +79,7 @@ function ChatsPageContent() {
       if (!(window as any).YT) return;
       
       player = new (window as any).YT.Player("yt-player", {
-        videoId: "o4qjk8_5gmU",
+        videoId: activeVideoId,
         playerVars: {
           autoplay: 1,
           mute: 1,
@@ -89,17 +89,20 @@ function ChatsPageContent() {
           vq: "hd1080",
           playsinline: 1,
           loop: 1,
-          playlist: "o4qjk8_5gmU", // Fallback for background tabs
+          playlist: activeVideoId, // Fallback for background tabs
         },
         events: {
           onReady: (event: any) => {
             event.target.playVideo();
             intervalId = setInterval(() => {
-              if (player && player.getCurrentTime) {
+              if (player && player.getCurrentTime && player.getDuration) {
                 const time = player.getCurrentTime();
-                // Manually trigger loop right before the 7-second mark to bypass the black frame.
-                if (time >= 6.8) {
-                  player.seekTo(0);
+                const duration = player.getDuration();
+                // Manually trigger loop right before the end to bypass the black frame.
+                if (activeVideoId === "o4qjk8_5gmU") {
+                  if (time >= 6.8) player.seekTo(0);
+                } else if (duration > 0) {
+                  if (time >= duration - 0.2) player.seekTo(0);
                 }
               }
             }, 50);
@@ -123,7 +126,7 @@ function ChatsPageContent() {
         player.destroy();
       }
     };
-  }, [isVideoOn]);
+  }, [isVideoOn, activeVideoId]);
 
   return (
     <main className={`fixed inset-0 flex z-0 overflow-hidden pt-[72px] pb-[88px] ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
@@ -228,11 +231,184 @@ function ChatsPageContent() {
           {/* ─ Sidebar (Groups / Person) ─ */}
           <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
 
-          {/* ─ Conversation Area ─ */}
-          <ChatConversation chat={activeChat} />
+          {/* ─ Dynamic Main Area ─ */}
+          {activeNav === "Chats" && <ChatConversation chat={activeChat} />}
+          {activeNav === "Home" && <HomeBlankScreen />}
+          {activeNav === "Notifications" && <NotificationsView />}
+          {activeNav === "Settings" && <SettingsView />}
 
         </div>
       </div>
     </main>
+  );
+}
+
+// ─── Auxiliary Views ─────────────────────────────────────────────────────────
+
+function HomeBlankScreen() {
+  const { panelBg, borderColor, textColor, mutedTextColor } = useChatTheme();
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center relative z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300`}>
+      <div className="flex flex-col items-center opacity-70">
+        <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`mb-6 ${textColor}`}>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          <path d="M13 8h6" />
+          <path d="M13 12h6" />
+        </svg>
+        <h2 className={`text-2xl font-semibold ${textColor} tracking-tight`}>We Learn for Desktop</h2>
+      </div>
+
+      <div className={`absolute bottom-8 flex items-center gap-2 text-[12px] font-medium ${mutedTextColor}`}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Your personal messages are <span className="text-emerald-500 font-semibold">end-to-end encrypted</span>
+      </div>
+    </section>
+  );
+}
+
+function NotificationsView() {
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldText } = useChatTheme();
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+      <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
+        <h2 className={`text-[16px] font-bold ${textColor}`}>Notifications & Mentions</h2>
+      </header>
+      <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-4 custom-scrollbar">
+          
+        <div className={`p-4 rounded-3xl border ${borderColor} transition-colors cursor-pointer ${hoverBg}`}>
+          <div className="flex justify-between items-start mb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-lg">
+                @
+              </div>
+              <div>
+                <h4 className={`text-[15px] font-semibold ${textColor}`}>Wealth mentioned you</h4>
+                <p className={`text-[12px] font-medium ${emeraldText}`}>Kingplus Internship Team</p>
+              </div>
+            </div>
+            <span className={`text-[12px] font-medium ${mutedTextColor}`}>10m ago</span>
+          </div>
+          <p className={`text-[13px] font-medium ${mutedTextColor} pl-13 ml-[52px]`}>
+            "<span className={emeraldText}>@you</span> are we still meeting at 3?"
+          </p>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+const BACKGROUND_OPTIONS = [
+  { id: 'o4qjk8_5gmU', title: 'Chilling Cat', exp: 0, img: 'https://img.youtube.com/vi/o4qjk8_5gmU/hqdefault.jpg' },
+  { id: 'gU4vSEZwiyE', title: 'Interstellar Black Hole', exp: 1000, img: 'https://img.youtube.com/vi/gU4vSEZwiyE/hqdefault.jpg' },
+  { id: 'kDCXBwzSI-4', title: 'Anime Rain Loop', exp: 2500, img: 'https://img.youtube.com/vi/kDCXBwzSI-4/hqdefault.jpg' },
+  { id: 'cBYPzXR49Jw', title: 'Animated Landscape', exp: 5000, img: 'https://img.youtube.com/vi/cBYPzXR49Jw/hqdefault.jpg' },
+  { id: 'm3xgELeHltU', title: 'Cyberpunk Cityscape', exp: 10000, img: 'https://img.youtube.com/vi/m3xgELeHltU/hqdefault.jpg' },
+];
+
+function SettingsView() {
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText, activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos } = useChatTheme();
+  const [isBgMenuOpen, setIsBgMenuOpen] = useState(false);
+
+  const handleVideoSelect = (id: string, exp: number) => {
+    if (unlockedVideos.includes(id)) {
+      setActiveVideoId(id);
+    } else {
+      // Simulate Unlocking statically via prompt logic
+      setUnlockedVideos([...unlockedVideos, id]);
+      setActiveVideoId(id);
+    }
+  };
+
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+      <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
+        <h2 className={`text-[16px] font-bold ${textColor}`}>Settings</h2>
+      </header>
+      <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 custom-scrollbar">
+        
+        <div>
+          <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4 px-2`}>Appearance</h3>
+          
+          <div className={`p-2 rounded-[1.75rem] border ${borderColor} shadow-sm transition-all duration-300`}>
+            
+            {/* Header / Trigger */}
+            <div 
+              onClick={() => setIsBgMenuOpen(!isBgMenuOpen)}
+              className={`p-4 flex items-center justify-between ${hoverBg} rounded-[1.25rem] cursor-pointer transition-colors active:scale-[0.98] duration-200`}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-[48px] h-[48px] rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center border border-blue-500/20 shadow-sm`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <div>
+                  <h4 className={`text-[16px] font-semibold tracking-tight ${textColor}`}>Background Change</h4>
+                  <p className={`text-[13px] font-medium ${mutedTextColor} mt-0.5`}>Change the active chat background</p>
+                </div>
+              </div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${borderColor} border transition-transform duration-300 ${isBgMenuOpen ? 'rotate-180 bg-black/10' : ''}`}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={textColor}><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            {/* Expandable Options UI */}
+            <div className={`grid transition-all duration-300 ease-in-out ${isBgMenuOpen ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0 mt-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="flex flex-col gap-2 p-2">
+                  {BACKGROUND_OPTIONS.map((bg) => {
+                    const isUnlocked = unlockedVideos.includes(bg.id);
+                    const isActive = activeVideoId === bg.id;
+                    
+                    return (
+                      <div 
+                        key={bg.id}
+                        onClick={() => handleVideoSelect(bg.id, bg.exp)}
+                        className={`group flex items-center gap-4 p-3 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                          isActive 
+                            ? `${emeraldBg} border-emerald-500/40 shadow-sm scale-[1.01]` 
+                            : `${hoverBg} border-transparent hover:${borderColor}`
+                        }`}
+                      >
+                        {/* Thumbnail Bubble */}
+                        <div className={`w-20 h-12 rounded-xl overflow-hidden shadow-sm relative shrink-0 ${!isUnlocked ? 'grayscale blur-[2px] opacity-60' : ''} transition-all duration-500`}>
+                          <img src={bg.img} alt={bg.title} className="w-full h-full object-cover" />
+                          {!isUnlocked && (
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Title / Info */}
+                        <div className="flex-1 min-w-0">
+                          <h5 className={`text-[14px] font-bold tracking-tight truncate ${isActive ? emeraldText : textColor}`}>
+                            {bg.title}
+                          </h5>
+                          {isActive ? (
+                            <p className="text-[11px] font-semibold text-emerald-500 mt-0.5">Currently Active</p>
+                          ) : isUnlocked ? (
+                            <p className={`text-[11px] font-medium ${mutedTextColor} mt-0.5`}>Unlocked</p>
+                          ) : (
+                            <p className={`text-[11px] font-bold text-amber-500/80 mt-0.5 flex items-center gap-1`}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                              Requires {bg.exp.toLocaleString()} EXP
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
   );
 }
