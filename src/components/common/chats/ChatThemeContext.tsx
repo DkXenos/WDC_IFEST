@@ -53,7 +53,12 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
 
   // Audio BGM State
   const [isMusicOn, setIsMusicOn] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(Math.floor(Math.random() * PLAYLIST.length));
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+  // Randomize initial song on client-side mount only to prevent hydration errors
+  React.useEffect(() => {
+    setCurrentSongIndex(Math.floor(Math.random() * PLAYLIST.length));
+  }, []);
 
   // When blur is off, make backgrounds highly opaque to preserve text readability
   const containerBg = isDarkTheme
