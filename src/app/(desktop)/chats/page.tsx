@@ -9,16 +9,6 @@ import { ChatThemeProvider, useChatTheme } from "@/components/common/chats/ChatT
 
 const navItems = [
   {
-    label: "Home",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-    active: false,
-  },
-  {
     label: "Chats",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -43,6 +33,15 @@ const navItems = [
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
         <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+      </svg>
+    ),
+    active: false,
+  },
+  {
+    label: "Friends",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
       </svg>
     ),
     active: false,
@@ -187,7 +186,11 @@ function ChatsPageContent() {
           <nav className={`w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-inner transition-colors duration-300`}>
             
             {/* User avatar */}
-            <div className="relative mb-4">
+            <div 
+              className={`relative mb-4 cursor-pointer rounded-[18px] transition-all duration-300 ${activeNav === "Profile" ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-transparent scale-[1.05]' : 'hover:scale-[1.02]'}`}
+              onClick={() => setActiveNav("Profile")}
+              title="View Profile"
+            >
               {currentUser.avatarUrl ? (
                 <img src={currentUser.avatarUrl} alt="User" className="w-[52px] h-[52px] rounded-[18px] object-cover shadow-sm border border-white/20" />
               ) : (
@@ -219,7 +222,12 @@ function ChatsPageContent() {
             {/* Bottom clock icon */}
             <button
               title="History"
-              className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center ${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor} mt-auto transition-all`}
+              onClick={() => setActiveNav("History")}
+              className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center mt-auto transition-all ${
+                activeNav === "History" 
+                  ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
+                  : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
+              }`}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
@@ -232,10 +240,13 @@ function ChatsPageContent() {
           <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
 
           {/* ─ Dynamic Main Area ─ */}
-          {activeNav === "Chats" && <ChatConversation chat={activeChat} />}
-          {activeNav === "Home" && <HomeBlankScreen />}
+          {activeNav === "Chats" && <ChatConversation chat={activeChat} onViewProfile={() => setActiveNav("ContactProfile")} />}
           {activeNav === "Notifications" && <NotificationsView />}
           {activeNav === "Settings" && <SettingsView />}
+          {activeNav === "Profile" && <UserProfileView />}
+          {activeNav === "ContactProfile" && <ContactProfileView chat={activeChat} />}
+          {activeNav === "Friends" && <FriendsView />}
+          {activeNav === "History" && <HistoryView />}
 
         </div>
       </div>
@@ -244,30 +255,6 @@ function ChatsPageContent() {
 }
 
 // ─── Auxiliary Views ─────────────────────────────────────────────────────────
-
-function HomeBlankScreen() {
-  const { panelBg, borderColor, textColor, mutedTextColor } = useChatTheme();
-  return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center relative z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300`}>
-      <div className="flex flex-col items-center opacity-70">
-        <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`mb-6 ${textColor}`}>
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          <path d="M13 8h6" />
-          <path d="M13 12h6" />
-        </svg>
-        <h2 className={`text-2xl font-semibold ${textColor} tracking-tight`}>We Learn for Desktop</h2>
-      </div>
-
-      <div className={`absolute bottom-8 flex items-center gap-2 text-[12px] font-medium ${mutedTextColor}`}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        Your personal messages are <span className="text-emerald-500 font-semibold">end-to-end encrypted</span>
-      </div>
-    </section>
-  );
-}
 
 function NotificationsView() {
   const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldText } = useChatTheme();
@@ -403,6 +390,235 @@ function SettingsView() {
                   })}
                 </div>
               </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+function UserProfileView() {
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldBg, emeraldText } = useChatTheme();
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300`}>
+      <div className="flex flex-col items-center max-w-sm text-center w-full px-4">
+        <div className="relative mb-6">
+          {currentUser.avatarUrl ? (
+            <img src={currentUser.avatarUrl} alt="User" className="w-[120px] h-[120px] rounded-full object-cover shadow-xl border-4 border-emerald-500/20" />
+          ) : (
+            <div className="w-[120px] h-[120px] rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-bold text-4xl shadow-xl border-4 border-emerald-500/20">
+              {currentUser.initials}
+            </div>
+          )}
+        </div>
+        
+        <h2 className={`text-2xl font-bold ${textColor}`}>{currentUser.name} (You)</h2>
+        <p className={`text-[14px] font-medium ${mutedTextColor} mt-1 mb-6`}>"Learning every day"</p>
+        
+        <div className={`w-full p-6 rounded-3xl border ${borderColor} flex justify-around mb-8`}>
+          <div className="flex flex-col items-center">
+            <span className={`text-[18px] font-bold ${textColor}`}>12</span>
+            <span className={`text-[12px] font-medium ${mutedTextColor} uppercase tracking-wider`}>Friends</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className={`text-[18px] font-bold ${textColor}`}>2,500</span>
+            <span className={`text-[12px] font-medium ${mutedTextColor} uppercase tracking-wider`}>EXP</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className={`text-[18px] font-bold ${textColor} flex items-center gap-1`}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Lvl. 4
+            </span>
+            <span className={`text-[12px] font-medium ${mutedTextColor} uppercase tracking-wider`}>Rank</span>
+          </div>
+        </div>
+        
+        <button className={`w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 ${emeraldBg} ${emeraldText} font-bold transition-transform active:scale-95 shadow-sm`}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Edit Profile
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function ContactProfileView({ chat }: { chat: any }) {
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldText, hoverBg } = useChatTheme();
+  const user = chat.type === "person" ? chat.participants.find((p: any) => p.id !== "me") : chat;
+  const isGroup = chat.type === "group";
+
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-y-auto custom-scrollbar relative`}>
+      <div className="flex flex-col items-center max-w-sm text-center py-10 w-full px-4">
+        <div className="relative mb-6">
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt={user.name || chat.name} className="w-[120px] h-[120px] rounded-full object-cover shadow-xl border-4 border-white/10" />
+          ) : (
+            <div className="w-[120px] h-[120px] rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-4xl shadow-xl border-4 border-white/10" style={{ backgroundColor: user.avatarColor }}>
+              {user.initials || chat.name.substring(0,2).toUpperCase()}
+            </div>
+          )}
+          {!isGroup && user.online && (
+             <div className="absolute bottom-2 right-2 w-6 h-6 bg-emerald-400 rounded-full border-4 border-[#1a1a1a]" />
+          )}
+        </div>
+
+        <h2 className={`text-2xl font-bold ${textColor}`}>{user.name || chat.name}</h2>
+        <p className={`text-[14px] font-medium ${isGroup ? mutedTextColor : (user.online ? emeraldText : mutedTextColor)} mt-1 mb-8`}>
+          {isGroup ? `${chat.participants.length} Members` : (user.online ? 'Online' : `Last seen ${user.lastSeen}`)}
+        </p>
+
+        <div className="flex gap-4 w-full justify-center mb-8">
+           {['Message', 'Voice Call', 'Video Call'].map((action, idx) => (
+             <button key={action} className={`flex-1 max-w-[80px] h-[80px] flex flex-col items-center justify-center gap-2 rounded-2xl ${hoverBg} border ${borderColor} text-[11px] font-semibold ${textColor} transition-all active:scale-95 hover:border-emerald-500/30 group`}>
+                <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  {idx === 0 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>}
+                  {idx === 1 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>}
+                  {idx === 2 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>}
+                </div>
+                {action}
+             </button>
+           ))}
+        </div>
+
+        {isGroup && (
+          <div className={`w-full text-left p-6 rounded-3xl border ${borderColor} shadow-sm bg-black/5`}>
+             <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4`}>Group Members</h3>
+             <div className="space-y-4">
+               {chat.participants.map((p: any) => (
+                 <div key={p.id} className="flex items-center gap-3">
+                   {p.avatarUrl ? (
+                      <img src={p.avatarUrl} alt={p.name} className="w-9 h-9 rounded-full object-cover shadow-sm border border-white/10" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-[#2d3a38] shadow-sm border border-white/10" style={{ backgroundColor: p.avatarColor }}>
+                        {p.initials}
+                      </div>
+                    )}
+                    <span className={`text-[14px] font-semibold ${textColor}`}>{p.name} {p.id === 'me' && <span className={mutedTextColor}>(You)</span>}</span>
+                 </div>
+               ))}
+             </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function FriendsView() {
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText } = useChatTheme();
+  const [tab, setTab] = useState<'Discover' | 'Requests'>('Discover');
+
+  const DUMMY_DISCOVER = [
+    { id: 1, name: "Jason Derulo", username: "@jderulo", initials: "JD", color: "#8E6B8E", bio: "Wanna study physics and create nice music?" },
+    { id: 2, name: "Selena", username: "@selly", initials: "S", color: "#6B8E8E", bio: "Engineering major - UI/UX Enthusiast" },
+  ];
+
+  const DUMMY_REQUESTS = [
+    { id: 3, name: "Mark Zuck", username: "@mark", initials: "MZ", color: "#8E6B6B", bio: "CS101 group?" }
+  ];
+
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+      <header className={`h-[84px] shrink-0 flex items-center justify-between px-8 border-b ${borderColor}`}>
+        <h2 className={`text-[16px] font-bold ${textColor}`}>Add Friends</h2>
+        <div className={`flex bg-black/10 dark:bg-black/40 p-1 rounded-[1.25rem] border ${borderColor}`}>
+          <button onClick={() => setTab('Discover')} className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all ${tab === 'Discover' ? 'bg-white/20 text-white shadow-sm' : `${mutedTextColor} hover:${textColor}`}`}>Discover</button>
+          <button onClick={() => setTab('Requests')} className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all flex items-center gap-2 ${tab === 'Requests' ? 'bg-white/20 text-white shadow-sm' : `${mutedTextColor} hover:${textColor}`}`}>
+            Requests
+            <span className="bg-emerald-500 text-white w-4 h-4 rounded-full flex items-center justify-center text-[10px]">1</span>
+          </button>
+        </div>
+      </header>
+
+      <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-4 custom-scrollbar">
+        {(tab === 'Discover' ? DUMMY_DISCOVER : DUMMY_REQUESTS).map((user) => (
+          <div key={user.id} className={`flex items-center justify-between p-4 rounded-[1.25rem] border ${borderColor} ${hoverBg} transition-colors group`}>
+            <div className="flex items-center gap-4 min-w-0 pr-4">
+               <div className="w-[52px] h-[52px] shrink-0 rounded-[18px] flex items-center justify-center font-bold text-[#2d3a38] text-lg shadow-sm border border-white/10 group-hover:scale-105 transition-transform" style={{ backgroundColor: user.color }}>
+                 {user.initials}
+               </div>
+               <div className="min-w-0">
+                 <h4 className={`text-[15px] font-bold ${textColor} truncate`}>{user.name} <span className={`font-medium ${mutedTextColor} ml-1`}>{user.username}</span></h4>
+                 <p className={`text-[13px] font-medium ${mutedTextColor} mt-0.5 max-w-[200px] truncate md:max-w-[400px]`}>{user.bio}</p>
+               </div>
+            </div>
+            {tab === 'Discover' ? (
+              <button className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${emeraldBg} ${emeraldText} shadow-sm active:scale-95 transition-transform`} title="Send Request">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 shrink-0">
+                <button className={`px-4 py-2 rounded-xl ${emeraldBg} ${emeraldText} font-bold text-[13px] shadow-sm active:scale-95 transition-transform`}>
+                  Accept
+                </button>
+                 <button className={`px-4 py-2 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 font-bold text-[13px] shadow-sm active:scale-95 transition-transform hidden md:block`}>
+                  Decline
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HistoryView() {
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText } = useChatTheme();
+  
+  return (
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+      <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
+        <h2 className={`text-[16px] font-bold ${textColor}`}>Activity History</h2>
+      </header>
+      <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 custom-scrollbar bg-black/5">
+        
+        {/* Mock History Timeline */}
+        <div>
+          <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4 px-2`}>Today</h3>
+          <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-white/10 before:to-transparent">
+            
+            <div className="relative flex items-center min-w-0 md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#1a1a1a] bg-emerald-500/20 text-emerald-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10 mx-2 transition-transform duration-300 group-hover:scale-110">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                </div>
+                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border ${borderColor} ${panelBg} shadow-sm min-w-0 pr-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer`}>
+                    <div className="flex items-center justify-between space-x-2 mb-1 min-w-0">
+                        <div className={`font-bold ${textColor} text-[14px] truncate`}>Voice Call with Wealth</div>
+                        <time className={`font-medium ${emeraldText} text-[12px] shrink-0 ml-1`}>2:45pm</time>
+                    </div>
+                    <div className={`text-[13px] font-medium ${mutedTextColor}`}>Duration: 42 mins</div>
+                </div>
+            </div>
+
+            <div className="relative flex items-center min-w-0 md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#1a1a1a] bg-blue-500/20 text-blue-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10 mx-2 transition-transform duration-300 group-hover:scale-110">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                </div>
+                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border ${borderColor} ${panelBg} shadow-sm min-w-0 pr-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer`}>
+                    <div className="flex items-center justify-between space-x-2 mb-1 min-w-0">
+                        <div className={`font-bold ${textColor} text-[14px] truncate`}>Accepted Friend Request</div>
+                        <time className={`font-medium ${mutedTextColor} text-[12px] shrink-0 ml-1`}>10:02am</time>
+                    </div>
+                    <div className={`text-[13px] font-medium ${mutedTextColor} truncate`}>You and Blessing are now friends.</div>
+                </div>
+            </div>
+
+            <div className="relative flex items-center min-w-0 md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#1a1a1a] bg-amber-500/20 text-amber-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10 mx-2 transition-transform duration-300 group-hover:scale-110">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div className={`w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border ${borderColor} ${panelBg} shadow-sm min-w-0 pr-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer`}>
+                    <div className="flex items-center justify-between space-x-2 mb-1 min-w-0">
+                        <div className={`font-bold ${textColor} text-[14px] truncate`}>Unlocked New Background</div>
+                        <time className={`font-medium ${mutedTextColor} text-[12px] shrink-0 ml-1`}>9:12am</time>
+                    </div>
+                    <div className={`text-[13px] font-medium ${mutedTextColor} truncate`}>Unlocked 'Interstellar Black Hole' for 1,000 EXP.</div>
+                </div>
             </div>
 
           </div>

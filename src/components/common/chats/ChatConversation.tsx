@@ -6,9 +6,10 @@ import { useChatTheme } from "./ChatThemeContext";
 
 interface ChatConversationProps {
   chat: Chat;
+  onViewProfile?: () => void;
 }
 
-export default function ChatConversation({ chat }: ChatConversationProps) {
+export default function ChatConversation({ chat, onViewProfile }: ChatConversationProps) {
   const user = getChatUser(chat);
   const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, isDarkTheme, emeraldText } = useChatTheme();
 
@@ -18,7 +19,11 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
       {/* Header */}
       <header className={`h-[84px] shrink-0 flex items-center justify-between px-6 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300`}>
         <div className="flex items-center gap-4 min-w-0">
-          <div className="relative shrink-0">
+          <div 
+            className="relative shrink-0 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+            onClick={onViewProfile}
+            title="View Contact Profile"
+          >
             {user.avatarUrl ? (
               <img
                 src={user.avatarUrl}
