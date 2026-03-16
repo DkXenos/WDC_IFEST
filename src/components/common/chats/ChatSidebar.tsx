@@ -31,7 +31,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
           </svg>
           <input
             type="text"
-            className="w-full h-11 pl-11 pr-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-[14px] text-white font-medium placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all shadow-sm"
+            className="w-full h-11 pl-11 pr-4 bg-black/30 backdrop-blur-md border border-white/10 rounded-full text-[14px] text-white font-medium placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:bg-black/50 transition-all shadow-sm"
             placeholder="Search"
             readOnly
           />
@@ -42,8 +42,8 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-8 custom-scrollbar">
         
         {/* Groups */}
-        <section className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-3 shadow-sm">
-          <h3 className="text-[13px] font-semibold text-white/90 mb-3 px-3 tracking-wide capitalize">
+        <section className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-3 shadow-sm">
+          <h3 className="text-[13px] font-semibold text-white/80 mb-3 px-3 tracking-wide capitalize">
             Groups
           </h3>
           <div className="flex flex-col gap-1">
@@ -58,8 +58,8 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
         </section>
 
         {/* Person */}
-        <section className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-3 shadow-sm">
-          <h3 className="text-[13px] font-semibold text-white/90 mb-3 px-3 tracking-wide capitalize">
+        <section className="bg-black/20 backdrop-blur-md border border-white/10 rounded-3xl p-3 shadow-sm">
+          <h3 className="text-[13px] font-semibold text-white/80 mb-3 px-3 tracking-wide capitalize">
             Person
           </h3>
           <div className="flex flex-col gap-1">

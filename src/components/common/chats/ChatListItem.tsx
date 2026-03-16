@@ -14,8 +14,8 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
     <div
       className={`flex items-center gap-3.5 px-3 py-3 rounded-[1.25rem] cursor-pointer transition-all border ${
         isActive
-          ? "bg-[#C7DCC4]/40 backdrop-blur-md border-[#C7DCC4]/50 shadow-sm"
-          : "bg-transparent border-transparent hover:bg-[#DDEFDF]/20"
+          ? "bg-black/40 backdrop-blur-md border-white/20 shadow-sm"
+          : "bg-transparent border-transparent hover:bg-black/20"
       }`}
     >
       {/* Avatar */}
@@ -42,20 +42,20 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
       {/* Text content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
         <div className="flex items-baseline justify-between gap-2">
-          <h4 className={`text-[15px] font-semibold truncate flex-1 min-w-0 ${isActive ? "text-[#2d3a38]" : "text-white"}`}>
+          <h4 className={`text-[15px] font-semibold truncate flex-1 min-w-0 ${isActive ? "text-white" : "text-white/90"}`}>
             {chat.name}
           </h4>
-          <span className={`text-[12px] font-medium shrink-0 ${isActive ? "text-[#5a7a75]" : "text-white/70"}`}>
+          <span className={`text-[12px] font-medium shrink-0 ${isActive ? "text-emerald-300" : "text-white/60"}`}>
             {chat.lastMessageTime}
           </span>
         </div>
         
         <div className="flex items-center justify-between gap-2 mt-0.5">
-          <p className={`text-[13px] font-medium truncate flex-1 min-w-0 m-0 ${isActive ? "text-[#5a7a75]" : "text-white/60"}`}>
+          <p className={`text-[13px] font-medium truncate flex-1 min-w-0 m-0 ${isActive ? "text-white/80" : "text-white/50"}`}>
             {chat.lastMessage}
           </p>
           {chat.unread && chat.unread > 0 ? (
-            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-[#C7DCC4] text-[#2d3a38] text-[11px] font-bold shadow-sm">
+            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-emerald-500/80 text-white border border-emerald-400/50 text-[11px] font-bold shadow-sm">
               {chat.unread}
             </span>
           ) : null}
