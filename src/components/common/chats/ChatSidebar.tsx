@@ -39,7 +39,6 @@ export default function ChatSidebar({ activeChatId, onSelectChat }: ChatSidebarP
             type="text"
             className={`w-full h-11 pl-11 pr-4 ${panelBg} border ${borderColor} rounded-full text-[14px] ${textColor} font-medium placeholder:opacity-50 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 transition-all shadow-sm`}
             placeholder="Search"
-            readOnly
           />
         </div>
       </header>

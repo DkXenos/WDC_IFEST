@@ -150,7 +150,7 @@ function ChatsPageContent() {
   }, [isVideoOn, activeVideoId]);
 
   return (
-    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-4 pb-4 ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
+    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-4 pb-28 lg:pb-32 ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
 
       {/* Video Background Layer */}
       {isVideoOn && (
@@ -177,7 +177,7 @@ function ChatsPageContent() {
       {/* Relax Widget (Active when Minimized) */}
       <RelaxWidget isVisible={isMinimized} onRestore={() => setIsMinimized(false)} />
 
-      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-2 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'}`}>
+      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-1 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'}`}>
         
         {/* Top Floating Dock Navbar */}
         <header className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2 shrink-0 relative z-50 transition-all duration-300`}>
