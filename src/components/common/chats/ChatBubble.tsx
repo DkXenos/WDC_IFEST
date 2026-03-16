@@ -1,5 +1,6 @@
+"use client";
+
 import { ChatMessage, ChatUser } from "@/data/chats";
-import { currentUser } from "@/data/chats";
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -9,32 +10,47 @@ interface ChatBubbleProps {
 
 export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
   return (
-    <div className={`flex w-full animate-in fade-in slide-in-from-bottom-2 duration-300 ${isSent ? "justify-end" : "justify-start"}`}>
-      
-      {/* Bubble Container */}
-      <div className="flex flex-col max-w-[70%]">
-        
-        <div className={`px-5 py-3 relative shadow-sm max-w-fit ${
-          isSent 
-            ? "bg-[#3e4443] text-[#e8efee] rounded-3xl rounded-br-[4px] self-end" 
-            : "bg-white/40 border border-white/20 text-[#142624] rounded-3xl rounded-bl-[4px] self-start backdrop-blur-md"
-        }`}>
-          <p className="m-0 text-[13px] leading-relaxed break-words font-medium pr-14">{message.text}</p>
-          
-          {/* Time / Read status (Absolutely positioned inline with text) */}
-          <div className={`absolute bottom-2 right-3 flex items-center gap-1 ${isSent ? "text-[#a3b1af]" : "text-[#4a726d]"}`}>
-            <span className="text-[9px] font-bold tracking-wider">{message.time}</span>
-            {isSent && message.read && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="opacity-90">
-                <path d="M18 7l-8 8-4-4" />
-                <path d="M22 7l-8 8" />
-              </svg>
-            )}
-          </div>
+    <div
+      className={`flex w-full ${isSent ? "justify-end" : "justify-start"}`}
+    >
+      <div
+        className={`relative max-w-[75%] px-5 py-3 shadow-sm ${
+          isSent
+            ? "bg-[#C7DCC4] text-[#2d3a38] rounded-2xl rounded-tr-sm"
+            : "bg-white/90 text-[#2d3a38] rounded-2xl rounded-tl-sm"
+        }`}
+      >
+        <p className="text-[14px] font-medium leading-relaxed m-0 break-words whitespace-pre-wrap">
+          {message.text}
+        </p>
+        <div
+          className={`flex items-center gap-1.5 mt-1.5 ${
+            isSent ? "justify-end" : "justify-start"
+          }`}
+        >
+          <span
+            className="text-[11px] font-medium text-[#5a7a75]"
+          >
+            {message.time}
+          </span>
+          {isSent && message.read && (
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-[#5a7a75]"
+            >
+              <path d="M18 7l-8 8-4-4" />
+              <path d="M22 7l-8 8" />
+            </svg>
+          )}
         </div>
-
       </div>
-
     </div>
   );
 }
