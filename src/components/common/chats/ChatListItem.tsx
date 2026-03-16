@@ -14,8 +14,8 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
     <div
       className={`flex items-center gap-3.5 px-3 py-3 rounded-[1.25rem] cursor-pointer transition-all border ${
         isActive
-          ? "bg-white/30 backdrop-blur-md border-white/40 shadow-sm"
-          : "bg-transparent border-transparent hover:bg-white/10"
+          ? "bg-[#C7DCC4]/40 backdrop-blur-md border-[#C7DCC4]/50 shadow-sm"
+          : "bg-transparent border-transparent hover:bg-[#DDEFDF]/20"
       }`}
     >
       {/* Avatar */}
@@ -55,7 +55,7 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
             {chat.lastMessage}
           </p>
           {chat.unread && chat.unread > 0 ? (
-            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-white/80 text-[#2d3a38] text-[11px] font-bold shadow-sm">
+            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-[#C7DCC4] text-[#2d3a38] text-[11px] font-bold shadow-sm">
               {chat.unread}
             </span>
           ) : null}

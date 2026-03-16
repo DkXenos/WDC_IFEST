@@ -16,7 +16,7 @@ export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
       <div
         className={`relative max-w-[75%] px-5 py-3 shadow-md border ${
           isSent
-            ? "bg-white/40 backdrop-blur-md border-white/50 text-[#2d3a38] rounded-3xl rounded-tr-md"
+            ? "bg-[#C7DCC4]/50 backdrop-blur-md border-white/50 text-[#2d3a38] rounded-3xl rounded-tr-md"
             : "bg-white/80 backdrop-blur-xl border-white/90 text-[#2d3a38] rounded-3xl rounded-tl-md"
         }`}
       >
