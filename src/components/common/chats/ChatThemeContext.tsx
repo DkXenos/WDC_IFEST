@@ -22,7 +22,24 @@ type ChatThemeContextType = {
   activeBg: string;
   emeraldBg: string;
   emeraldText: string;
+
+  // Background Music State
+  isMusicOn: boolean;
+  setIsMusicOn: (v: boolean) => void;
+  currentSongIndex: number;
+  setCurrentSongIndex: (v: number) => void;
+  PLAYLIST: Array<{ title: string, src: string }>;
 };
+
+export const PLAYLIST = [
+  { title: "Lofi Beats 1 - Chill Study", src: "/audio/lofi-playlist/Lofi-1.mp3" },
+  { title: "Lofi Beats 2 - Late Night", src: "/audio/lofi-playlist/Lofi-2.mp3" },
+  { title: "Lofi Beats 3 - Morning Coffee", src: "/audio/lofi-playlist/Lofi-3.mp3" },
+  { title: "Lofi Beats 4 - Relaxing Vibes", src: "/audio/lofi-playlist/Lofi-4.mp3" },
+  { title: "Lofi Beats 5 - Sunset Drive", src: "/audio/lofi-playlist/Lofi-5.mp3" },
+  { title: "Lofi Beats 6 - Rainy Days", src: "/audio/lofi-playlist/Lofi-6.mp3" },
+  { title: "Lofi Beats 7 - Deep Focus", src: "/audio/lofi-playlist/Lofi-7.mp3" },
+];
 
 export const ChatThemeContext = createContext<ChatThemeContextType | null>(null);
 
@@ -33,6 +50,10 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   // Video Backgrounds State
   const [activeVideoId, setActiveVideoId] = useState('o4qjk8_5gmU');
   const [unlockedVideos, setUnlockedVideos] = useState<string[]>(['o4qjk8_5gmU']); // The chilling cat default is unlocked
+
+  // Audio BGM State
+  const [isMusicOn, setIsMusicOn] = useState(false);
+  const [currentSongIndex, setCurrentSongIndex] = useState(Math.floor(Math.random() * PLAYLIST.length));
 
   // When blur is off, make backgrounds highly opaque to preserve text readability
   const containerBg = isDarkTheme
@@ -55,7 +76,8 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
     <ChatThemeContext.Provider value={{
       isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn,
       activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos,
-      containerBg, panelBg, borderColor, textColor, mutedTextColor, hoverBg, activeBg, emeraldBg, emeraldText
+      containerBg, panelBg, borderColor, textColor, mutedTextColor, hoverBg, activeBg, emeraldBg, emeraldText,
+      isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST
     }}>
       {children}
     </ChatThemeContext.Provider>

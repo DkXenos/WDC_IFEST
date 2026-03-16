@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { chats, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
@@ -57,8 +57,30 @@ export default function ChatsPage() {
 }
 
 function ChatsPageContent() {
-  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, activeVideoId } = useChatTheme();
+  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, activeVideoId, isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST } = useChatTheme();
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+
+  // Handle Audio Playback
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isMusicOn) {
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isMusicOn, currentSongIndex]);
+
+  // Handle Audio End (Auto-play random next song)
+  const handleSongEnd = () => {
+    let nextIndex;
+    do {
+      nextIndex = Math.floor(Math.random() * PLAYLIST.length);
+    } while (nextIndex === currentSongIndex && PLAYLIST.length > 1);
+    setCurrentSongIndex(nextIndex);
+  };
   
   // Navigation State
   const [activeNav, setActiveNav] = useState("Chats");
@@ -139,12 +161,23 @@ function ChatsPageContent() {
         </div>
       )}
       
+      {/* Background Audio Player */}
+      <audio 
+        ref={audioRef}
+        src={PLAYLIST[currentSongIndex]?.src}
+        onEnded={handleSongEnd}
+        preload="auto"
+      />
+      
       {/* Dark overlay for contrast */}
       {isVideoOn && (
         <div className={`absolute inset-0 z-[-1] pointer-events-none transition-colors duration-500 ${isDarkTheme ? 'bg-black/40' : 'bg-white/20'}`} />
       )}
 
-      <div className="flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-2 gap-4 relative z-10 transition-all duration-500">
+      {/* Relax Widget (Active when Minimized) */}
+      <RelaxWidget isVisible={isMinimized} onRestore={() => setIsMinimized(false)} />
+
+      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-2 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'}`}>
         
         {/* Top Floating Dock Navbar */}
         <header className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2 shrink-0 relative z-50 transition-all duration-300`}>
@@ -175,6 +208,24 @@ function ChatsPageContent() {
             ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             )}
+          </button>
+          
+          <button 
+            onClick={() => setIsMusicOn(!isMusicOn)}
+            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isMusicOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
+            title="Toggle Background Music"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </button>
+          
+          <div className={`w-px h-8 ${borderColor} mx-1`} />
+
+          <button
+            onClick={() => setIsMinimized(true)}
+            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border border-transparent shadow-sm ${hoverBg} hover:${borderColor} ${textColor}`}
+            title="Minimize to Widget"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
           </button>
           
         </header>
@@ -297,7 +348,11 @@ const BACKGROUND_OPTIONS = [
 ];
 
 function SettingsView() {
-  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText, activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos } = useChatTheme();
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText, activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos, isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST } = useChatTheme();
+  
+  // Settings Tab State
+  const [activeTab, setActiveTab] = useState<'Appearance' | 'Music'>('Appearance');
+  
   const [isBgMenuOpen, setIsBgMenuOpen] = useState(false);
 
   const handleVideoSelect = (id: string, exp: number) => {
@@ -312,13 +367,20 @@ function SettingsView() {
 
   return (
     <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
-      <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
+      <header className={`h-[84px] shrink-0 flex items-center justify-between px-8 border-b ${borderColor}`}>
         <h2 className={`text-[16px] font-bold ${textColor}`}>Settings</h2>
+        
+        <div className={`flex bg-black/10 dark:bg-black/40 p-1 rounded-[1.25rem] border ${borderColor}`}>
+          <button onClick={() => setActiveTab('Appearance')} className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all ${activeTab === 'Appearance' ? 'bg-white/20 text-white shadow-sm' : `${mutedTextColor} hover:${textColor}`}`}>Appearance</button>
+          <button onClick={() => setActiveTab('Music')} className={`px-5 py-2 rounded-xl text-[13px] font-bold transition-all ${activeTab === 'Music' ? 'bg-white/20 text-white shadow-sm' : `${mutedTextColor} hover:${textColor}`}`}>Music</button>
+        </div>
       </header>
+      
       <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 custom-scrollbar">
         
-        <div>
-          <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4 px-2`}>Appearance</h3>
+        {activeTab === 'Appearance' && (
+          <div>
+            <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4 px-2`}>Display</h3>
           
           <div className={`p-2 rounded-[1.75rem] border ${borderColor} shadow-sm transition-all duration-300`}>
             
@@ -393,7 +455,68 @@ function SettingsView() {
             </div>
 
           </div>
-        </div>
+          </div>
+        )}
+
+        {/* Music Tab Settings */}
+        {activeTab === 'Music' && (
+          <div>
+            <div className="flex items-center justify-between mb-4 px-2">
+               <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider`}>Lofi Playlist</h3>
+               <button 
+                 onClick={() => setIsMusicOn(!isMusicOn)}
+                 className={`px-4 py-1.5 rounded-full text-[12px] font-bold transition-all border shadow-sm ${isMusicOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
+               >
+                 {isMusicOn ? 'Pause' : 'Play'}
+               </button>
+            </div>
+            
+            <div className={`flex flex-col gap-2`}>
+              {PLAYLIST.map((song, idx) => {
+                const isActive = currentSongIndex === idx;
+                
+                return (
+                  <div 
+                    key={song.src}
+                    onClick={() => {
+                       setCurrentSongIndex(idx);
+                       if (!isMusicOn) setIsMusicOn(true);
+                    }}
+                    className={`group flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                      isActive 
+                        ? `${emeraldBg} border-emerald-500/40 shadow-sm scale-[1.01]` 
+                        : `${hoverBg} border-transparent hover:${borderColor}`
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Track Icon */}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-colors ${isActive ? 'bg-emerald-500 text-white' : 'bg-black/10 text-white/60'}`}>
+                        {isActive && isMusicOn ? (
+                          <div className="flex items-end gap-1 h-4">
+                            <div className="w-1 bg-white animate-[bounce_1s_infinite] h-full" />
+                            <div className="w-1 bg-white animate-[bounce_1s_infinite_0.2s] h-2/3" />
+                            <div className="w-1 bg-white animate-[bounce_1s_infinite_0.4s] h-full" />
+                          </div>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <h4 className={`text-[15px] font-bold tracking-tight ${isActive ? emeraldText : textColor}`}>
+                          {song.title}
+                        </h4>
+                        <p className={`text-[12px] font-medium ${isActive ? 'text-emerald-500' : mutedTextColor} mt-0.5 uppercase tracking-wider`}>
+                          {isActive ? 'Currently Playing' : `Track ${idx + 1}`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
       </div>
     </section>
@@ -626,5 +749,43 @@ function HistoryView() {
 
       </div>
     </section>
+  );
+}
+
+function RelaxWidget({ isVisible, onRestore }: { isVisible: boolean, onRestore: () => void }) {
+  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText } = useChatTheme();
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    if (!isVisible) return;
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, [isVisible]);
+
+  return (
+    <div 
+      className={`fixed inset-0 z-40 flex items-center justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+    >
+      <div 
+        onClick={onRestore}
+        className={`pointer-events-auto flex flex-col items-center justify-center p-12 ${panelBg} backdrop-blur-3xl rounded-[3rem] border ${borderColor} shadow-2xl cursor-pointer group transition-transform hover:scale-105 active:scale-95`}
+      >
+        <div className={`text-6xl md:text-8xl font-black tracking-tighter ${textColor} mb-2`}>
+          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
+        <div className={`text-lg md:text-xl font-medium ${mutedTextColor} mb-8 uppercase tracking-widest`}>
+          {time.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
+        </div>
+        
+        <div className={`px-6 py-3 rounded-full flex items-center gap-3 bg-black/20 dark:bg-black/40 border ${borderColor} ${textColor}`}>
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-semibold text-sm tracking-wide">Take a break</span>
+        </div>
+
+        <div className={`absolute -bottom-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${emeraldBg} ${emeraldText} px-6 py-2 rounded-full text-sm font-bold shadow-lg`}>
+          Click to Restore
+        </div>
+      </div>
+    </div>
   );
 }
