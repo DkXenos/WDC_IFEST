@@ -594,18 +594,7 @@ function ContactProfileView({ chat }: { chat: any }) {
           {isGroup ? `${chat.participants.length} Members` : (user.online ? 'Online' : `Last seen ${user.lastSeen}`)}
         </p>
 
-        <div className="flex gap-4 w-full justify-center mb-8">
-           {['Message', 'Voice Call', 'Video Call'].map((action, idx) => (
-             <button key={action} className={`flex-1 max-w-[80px] h-[80px] flex flex-col items-center justify-center gap-2 rounded-2xl ${hoverBg} border ${borderColor} text-[11px] font-semibold ${textColor} transition-all active:scale-95 hover:border-emerald-500/30 group`}>
-                <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  {idx === 0 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>}
-                  {idx === 1 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>}
-                  {idx === 2 && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>}
-                </div>
-                {action}
-             </button>
-           ))}
-        </div>
+
 
         {isGroup && (
           <div className={`w-full text-left p-6 rounded-3xl border ${borderColor} shadow-sm bg-black/5`}>

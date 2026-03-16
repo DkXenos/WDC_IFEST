@@ -54,15 +54,7 @@ export default function ChatConversation({ chat, onViewProfile }: ChatConversati
         </div>
         
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            title="Video"
-            className={`w-10 h-10 rounded-xl flex items-center justify-center ${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor} transition-all`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="23 7 16 12 23 17 23 7" />
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-            </svg>
-          </button>
+          {/* Action icons removed per request */}
         </div>
       </header>
 
