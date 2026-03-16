@@ -1,6 +1,7 @@
 "use client";
 
 import { ChatMessage, ChatUser } from "@/data/chats";
+import { useChatTheme } from "./ChatThemeContext";
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -9,18 +10,20 @@ interface ChatBubbleProps {
 }
 
 export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldBg, emeraldText, isDarkTheme } = useChatTheme();
+
   return (
     <div
       className={`flex w-full ${isSent ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`relative max-w-[75%] px-5 py-3 shadow-md border ${
+        className={`relative max-w-[75%] px-5 py-3 shadow-md border transition-colors duration-300 ${
           isSent
-            ? "bg-emerald-500/20 backdrop-blur-md border-emerald-400/30 text-emerald-50 rounded-3xl rounded-tr-md"
-            : "bg-black/50 backdrop-blur-md border-white/10 text-white rounded-3xl rounded-tl-md"
+            ? `${emeraldBg} rounded-3xl rounded-tr-md`
+            : `${panelBg} ${borderColor} rounded-3xl rounded-tl-md`
         }`}
       >
-        <p className={`text-[14px] font-medium leading-relaxed m-0 break-words whitespace-pre-wrap ${isSent ? 'text-emerald-50' : 'text-white/90'}`}>
+        <p className={`text-[14px] font-medium leading-relaxed m-0 break-words whitespace-pre-wrap ${isSent ? emeraldText : textColor}`}>
           {message.text}
         </p>
         <div
@@ -29,7 +32,7 @@ export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
           }`}
         >
           <span
-            className={`text-[11px] font-medium ${isSent ? 'text-emerald-200/80' : 'text-white/50'}`}
+            className={`text-[11px] font-medium ${isSent ? (isDarkTheme ? 'text-emerald-200/80' : 'text-emerald-700/80') : mutedTextColor}`}
           >
             {message.time}
           </span>
@@ -43,7 +46,7 @@ export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-white/50" // Changed checkmark color to match dark theme
+              className={isSent ? (isDarkTheme ? 'text-emerald-200/80' : 'text-emerald-700/80') : mutedTextColor}
             >
               <path d="M18 7l-8 8-4-4" />
               <path d="M22 7l-8 8" />

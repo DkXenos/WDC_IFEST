@@ -1,6 +1,7 @@
 "use client";
 
 import { Chat, getChatUser } from "@/data/chats";
+import { useChatTheme } from "./ChatThemeContext";
 
 interface ChatListItemProps {
   chat: Chat;
@@ -9,13 +10,14 @@ interface ChatListItemProps {
 
 export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
   const user = getChatUser(chat);
+  const { textColor, mutedTextColor, hoverBg, isDarkTheme, emeraldBg, emeraldText } = useChatTheme();
 
   return (
     <div
       className={`flex items-center gap-3.5 px-3 py-3 rounded-[1.25rem] cursor-pointer transition-all border ${
         isActive
-          ? "bg-black/40 backdrop-blur-md border-white/20 shadow-sm"
-          : "bg-transparent border-transparent hover:bg-black/20"
+          ? `${emeraldBg} shadow-sm`
+          : `bg-transparent border-transparent ${hoverBg}`
       }`}
     >
       {/* Avatar */}
@@ -42,16 +44,16 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
       {/* Text content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
         <div className="flex items-baseline justify-between gap-2">
-          <h4 className={`text-[15px] font-semibold truncate flex-1 min-w-0 ${isActive ? "text-white" : "text-white/90"}`}>
+          <h4 className={`text-[15px] font-semibold truncate flex-1 min-w-0 ${isActive ? emeraldText : textColor}`}>
             {chat.name}
           </h4>
-          <span className={`text-[12px] font-medium shrink-0 ${isActive ? "text-emerald-300" : "text-white/60"}`}>
+          <span className={`text-[12px] font-medium shrink-0 ${isActive ? (isDarkTheme ? "text-emerald-300" : "text-emerald-600") : mutedTextColor}`}>
             {chat.lastMessageTime}
           </span>
         </div>
         
         <div className="flex items-center justify-between gap-2 mt-0.5">
-          <p className={`text-[13px] font-medium truncate flex-1 min-w-0 m-0 ${isActive ? "text-white/80" : "text-white/50"}`}>
+          <p className={`text-[13px] font-medium truncate flex-1 min-w-0 m-0 ${isActive ? (isDarkTheme ? "text-emerald-100/80" : "text-emerald-800/80") : mutedTextColor}`}>
             {chat.lastMessage}
           </p>
           {chat.unread && chat.unread > 0 ? (
