@@ -1,17 +1,21 @@
 "use client";
 
+import { useState } from "react";
+
 import { chats } from "@/data/chats";
 import ChatListItem from "./ChatListItem";
 import { useChatTheme } from "./ChatThemeContext";
 
 interface ChatSidebarProps {
   activeChatId: string;
+  onSelectChat: (id: string) => void;
 }
 
-export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
+export default function ChatSidebar({ activeChatId, onSelectChat }: ChatSidebarProps) {
+  const [activeTab, setActiveTab] = useState<"person" | "groups">("person");
   const groupChats = chats.filter((c) => c.type === "group");
   const personChats = chats.filter((c) => c.type === "person");
-  const { panelBg, borderColor, textColor, mutedTextColor } = useChatTheme();
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldBg, emeraldText } = useChatTheme();
 
   return (
     <aside className="w-[360px] shrink-0 h-full flex flex-col bg-transparent relative z-10 mr-4">
@@ -40,41 +44,52 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
         </div>
       </header>
 
-      {/* Scrollable Lists */}
-      <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-8 custom-scrollbar">
-        
-        {/* Groups */}
-        <section className={`${panelBg} border ${borderColor} rounded-3xl p-3 shadow-sm transition-colors duration-300`}>
-          <h3 className={`text-[13px] font-semibold ${textColor} opacity-80 mb-3 px-3 tracking-wide capitalize`}>
+      {/* Tabs */}
+      <div className="px-6 pb-4 shrink-0">
+        <div className={`p-1 flex items-center ${panelBg} border ${borderColor} rounded-2xl transition-colors duration-300`}>
+          <button 
+            onClick={() => setActiveTab('groups')}
+            className={`flex-1 py-1.5 text-[13px] font-semibold rounded-[12px] transition-all ${activeTab === 'groups' ? `${emeraldBg} ${emeraldText} shadow-sm border` : `${mutedTextColor} hover:${textColor} border border-transparent`}`}
+          >
             Groups
-          </h3>
-          <div className="flex flex-col gap-1">
+          </button>
+          <button 
+            onClick={() => setActiveTab('person')}
+            className={`flex-1 py-1.5 text-[13px] font-semibold rounded-[12px] transition-all ${activeTab === 'person' ? `${emeraldBg} ${emeraldText} shadow-sm border` : `${mutedTextColor} hover:${textColor} border border-transparent`}`}
+          >
+            Person
+          </button>
+        </div>
+      </div>
+
+      {/* Scrollable Lists */}
+      <div className="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar">
+        
+        {activeTab === "groups" && (
+          <div className="flex flex-col gap-1 fade-in">
             {groupChats.map((chat) => (
               <ChatListItem
                 key={chat.id}
                 chat={chat}
                 isActive={chat.id === activeChatId}
+                onClick={() => onSelectChat(chat.id)}
               />
             ))}
           </div>
-        </section>
+        )}
 
-        {/* Person */}
-        <section className={`${panelBg} border ${borderColor} rounded-3xl p-3 shadow-sm transition-colors duration-300`}>
-          <h3 className={`text-[13px] font-semibold ${textColor} opacity-80 mb-3 px-3 tracking-wide capitalize`}>
-            Person
-          </h3>
-          <div className="flex flex-col gap-1">
+        {activeTab === "person" && (
+          <div className="flex flex-col gap-1 fade-in">
             {personChats.map((chat) => (
               <ChatListItem
                 key={chat.id}
                 chat={chat}
                 isActive={chat.id === activeChatId}
+                onClick={() => onSelectChat(chat.id)}
               />
             ))}
           </div>
-        </section>
-
+        )}
       </div>
     </aside>
   );

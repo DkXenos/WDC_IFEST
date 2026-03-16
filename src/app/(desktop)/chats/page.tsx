@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
-import { activeChat, currentUser } from "@/data/chats";
+import { chats, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
 import ChatConversation from "@/components/common/chats/ChatConversation";
 import { ChatThemeProvider, useChatTheme } from "@/components/common/chats/ChatThemeContext";
@@ -60,6 +60,13 @@ export default function ChatsPage() {
 function ChatsPageContent() {
   const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor } = useChatTheme();
   const [isVideoOn, setIsVideoOn] = useState(true);
+  
+  // Navigation State
+  const [activeNav, setActiveNav] = useState("Chats");
+
+  // Chat State
+  const [activeChatId, setActiveChatId] = useState("person-wealth");
+  const activeChat = useMemo(() => chats.find(c => c.id === activeChatId) || chats[0], [activeChatId]);
 
   // Implement YouTube Iframe API to manually seek and prevent black frames.
   useEffect(() => {
@@ -194,8 +201,9 @@ function ChatsPageContent() {
                 <button
                   key={item.label}
                   title={item.label}
+                  onClick={() => setActiveNav(item.label)}
                   className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center transition-all ${
-                    item.active
+                    item.label === activeNav
                       ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
                       : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
                   }`}
@@ -218,7 +226,7 @@ function ChatsPageContent() {
           </nav>
 
           {/* ─ Sidebar (Groups / Person) ─ */}
-          <ChatSidebar activeChatId={activeChat.id} />
+          <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
 
           {/* ─ Conversation Area ─ */}
           <ChatConversation chat={activeChat} />

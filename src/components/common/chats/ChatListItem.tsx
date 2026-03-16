@@ -6,14 +6,16 @@ import { useChatTheme } from "./ChatThemeContext";
 interface ChatListItemProps {
   chat: Chat;
   isActive?: boolean;
+  onClick?: () => void;
 }
 
-export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
+export default function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
   const user = getChatUser(chat);
   const { textColor, mutedTextColor, hoverBg, isDarkTheme, emeraldBg, emeraldText } = useChatTheme();
 
   return (
     <div
+      onClick={onClick}
       className={`flex items-center gap-3.5 px-3 py-3 rounded-[1.25rem] cursor-pointer transition-all border ${
         isActive
           ? `${emeraldBg} shadow-sm`
