@@ -129,7 +129,7 @@ function ChatsPageContent() {
   }, [isVideoOn, activeVideoId]);
 
   return (
-    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-[72px] pb-[88px] ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
+    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-4 pb-4 ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
 
       {/* Video Background Layer */}
       {isVideoOn && (
