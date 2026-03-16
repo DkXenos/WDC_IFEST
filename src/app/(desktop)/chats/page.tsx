@@ -48,59 +48,69 @@ const navItems = [
 
 export default function ChatsPage() {
   return (
-    <main className="fixed inset-0 pt-[72px] pb-[88px] flex bg-[#F0D9C7] z-0">
-      <div className="flex w-full h-full shadow-[-4px_0_24px_-4px_rgba(0,0,0,0.05)]">
-        
-        {/* ─ Vertical Nav Strip ─ */}
-        <nav className="w-24 shrink-0 h-full flex flex-col items-center py-8 gap-5 bg-[#DDEFDF] border-r border-[#C7DCC4]/50">
+    <main className="fixed inset-0 pt-[72px] pb-[88px] flex z-0 overflow-hidden bg-[#2d3a38]">
+      {/* Background Mesh Gradient */}
+      <div className="absolute inset-0 z-[-1]">
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#5a7a75]/40 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#DDEFDF]/20 blur-[150px]" />
+        <div className="absolute top-[30%] left-[30%] w-[40vw] h-[40vw] rounded-full bg-[#F0D9C7]/10 blur-[100px]" />
+      </div>
+
+      <div className="flex w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-2">
+        {/* Main Glassmorphic Window Container */}
+        <div className="flex w-full h-full bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] shadow-2xl overflow-hidden p-2 gap-2">
           
-          {/* User avatar */}
-          <div className="relative mb-4">
-            {currentUser.avatarUrl ? (
-              <img src={currentUser.avatarUrl} alt="User" className="w-[52px] h-[52px] rounded-[18px] object-cover shadow-sm border-2 border-[#F0D9C7]" />
-            ) : (
-              <div className="w-[52px] h-[52px] rounded-[18px] bg-[#DADBC6] flex items-center justify-center text-[#2d3a38] font-bold text-sm shadow-sm border-2 border-[#F0D9C7]">
-                {currentUser.initials}
-              </div>
-            )}
-            <div className="absolute -bottom-1 -right-1 w-[18px] h-[18px] bg-emerald-400 rounded-full border-[3px] border-[#DDEFDF]" />
-          </div>
+          {/* ─ Vertical Nav Strip ─ */}
+          <nav className="w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 bg-white/10 backdrop-blur-md rounded-[1.5rem] border border-white/10 shadow-inner">
+            
+            {/* User avatar */}
+            <div className="relative mb-4">
+              {currentUser.avatarUrl ? (
+                <img src={currentUser.avatarUrl} alt="User" className="w-[52px] h-[52px] rounded-[18px] object-cover shadow-sm border border-white/30" />
+              ) : (
+                <div className="w-[52px] h-[52px] rounded-[18px] bg-white/40 backdrop-blur-sm flex items-center justify-center text-[#2d3a38] font-bold text-sm shadow-sm border border-white/30">
+                  {currentUser.initials}
+                </div>
+              )}
+              <div className="absolute -bottom-1 -right-1 w-[18px] h-[18px] bg-emerald-400 rounded-full border-[3px] border-transparent" />
+            </div>
 
-          {/* Icons */}
-          <div className="flex flex-col gap-3 flex-1 items-center w-full">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                title={item.label}
-                className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center transition-all ${
-                  item.active
-                    ? "bg-[#F0D9C7] text-[#2d3a38] shadow-sm font-semibold"
-                    : "text-[#5a7a75] hover:text-[#2d3a38] hover:bg-black/5"
-                }`}
-              >
-                {item.icon}
-              </button>
-            ))}
-          </div>
+            {/* Icons */}
+            <div className="flex flex-col gap-3 flex-1 items-center w-full">
+              {navItems.map((item) => (
+                <button
+                  key={item.label}
+                  title={item.label}
+                  className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center transition-all ${
+                    item.active
+                      ? "bg-white/80 text-[#2d3a38] shadow-md font-semibold"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {item.icon}
+                </button>
+              ))}
+            </div>
 
-          {/* Bottom clock icon */}
-          <button
-            title="History"
-            className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center text-[#5a7a75] hover:text-[#2d3a38] hover:bg-black/5 mt-auto transition-all"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          </button>
-        </nav>
+            {/* Bottom clock icon */}
+            <button
+              title="History"
+              className="w-[52px] h-[52px] rounded-2xl flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 mt-auto transition-all"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </button>
+          </nav>
 
-        {/* ─ Sidebar (Groups / Person) ─ */}
-        <ChatSidebar activeChatId={activeChat.id} />
+          {/* ─ Sidebar (Groups / Person) ─ */}
+          <ChatSidebar activeChatId={activeChat.id} />
 
-        {/* ─ Conversation Area ─ */}
-        <ChatConversation chat={activeChat} />
+          {/* ─ Conversation Area ─ */}
+          <ChatConversation chat={activeChat} />
 
+        </div>
       </div>
     </main>
   );

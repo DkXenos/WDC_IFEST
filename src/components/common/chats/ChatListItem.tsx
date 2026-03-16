@@ -12,10 +12,10 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
 
   return (
     <div
-      className={`flex items-center gap-3.5 px-3 py-3 rounded-2xl cursor-pointer transition-all border ${
+      className={`flex items-center gap-3.5 px-3 py-3 rounded-[1.25rem] cursor-pointer transition-all border ${
         isActive
-          ? "bg-[#F0D9C7] border-[#C7DCC4]/50 shadow-sm"
-          : "bg-transparent border-transparent hover:bg-white/40"
+          ? "bg-white/30 backdrop-blur-md border-white/40 shadow-sm"
+          : "bg-transparent border-transparent hover:bg-white/10"
       }`}
     >
       {/* Avatar */}
@@ -28,7 +28,7 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
           />
         ) : (
           <div
-            className="w-11 h-11 rounded-[14px] flex items-center justify-center text-[#2d3a38] text-sm font-bold"
+            className="w-11 h-11 rounded-[14px] flex items-center justify-center text-[#2d3a38] text-sm font-bold shadow-sm"
             style={{ backgroundColor: user.avatarColor }}
           >
             {user.initials}
@@ -42,20 +42,20 @@ export default function ChatListItem({ chat, isActive }: ChatListItemProps) {
       {/* Text content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
         <div className="flex items-baseline justify-between gap-2">
-          <h4 className="text-[14px] font-bold text-[#2d3a38] truncate flex-1 min-w-0">
+          <h4 className={`text-[15px] font-semibold truncate flex-1 min-w-0 ${isActive ? "text-[#2d3a38]" : "text-white"}`}>
             {chat.name}
           </h4>
-          <span className="text-[11px] font-medium text-[#5a7a75] shrink-0">
+          <span className={`text-[12px] font-medium shrink-0 ${isActive ? "text-[#5a7a75]" : "text-white/70"}`}>
             {chat.lastMessageTime}
           </span>
         </div>
         
         <div className="flex items-center justify-between gap-2 mt-0.5">
-          <p className="text-[12px] font-medium text-[#5a7a75] truncate flex-1 min-w-0 m-0">
+          <p className={`text-[13px] font-medium truncate flex-1 min-w-0 m-0 ${isActive ? "text-[#5a7a75]" : "text-white/60"}`}>
             {chat.lastMessage}
           </p>
           {chat.unread && chat.unread > 0 ? (
-            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-[#C7DCC4] text-[#2d3a38] text-[11px] font-bold shadow-sm">
+            <span className="flex items-center justify-center shrink-0 min-w-[22px] h-[22px] px-1.5 rounded-full bg-white/80 text-[#2d3a38] text-[11px] font-bold shadow-sm">
               {chat.unread}
             </span>
           ) : null}

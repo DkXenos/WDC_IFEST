@@ -14,10 +14,10 @@ export default function ChatBubble({ message, isSent }: ChatBubbleProps) {
       className={`flex w-full ${isSent ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`relative max-w-[75%] px-5 py-3 shadow-sm ${
+        className={`relative max-w-[75%] px-5 py-3 shadow-md border ${
           isSent
-            ? "bg-[#C7DCC4] text-[#2d3a38] rounded-2xl rounded-tr-sm"
-            : "bg-white/90 text-[#2d3a38] rounded-2xl rounded-tl-sm"
+            ? "bg-white/40 backdrop-blur-md border-white/50 text-[#2d3a38] rounded-3xl rounded-tr-md"
+            : "bg-white/80 backdrop-blur-xl border-white/90 text-[#2d3a38] rounded-3xl rounded-tl-md"
         }`}
       >
         <p className="text-[14px] font-medium leading-relaxed m-0 break-words whitespace-pre-wrap">

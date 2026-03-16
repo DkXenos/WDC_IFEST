@@ -11,10 +11,10 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
   const user = getChatUser(chat);
 
   return (
-    <section className="flex-1 h-full min-w-0 flex flex-col bg-[#F0D9C7] relative z-20">
+    <section className="flex-1 h-full min-w-0 flex flex-col bg-transparent relative z-20">
       
       {/* Header */}
-      <header className="h-[84px] shrink-0 flex items-center justify-between px-8 bg-[#F0D9C7] border-b border-[#C7DCC4]/50">
+      <header className="h-[84px] shrink-0 flex items-center justify-between px-6 bg-white/10 backdrop-blur-md rounded-[1.5rem] border border-white/20 shadow-sm mt-4 mr-4 mx-2">
         <div className="flex items-center gap-4 min-w-0">
           <div className="relative shrink-0">
             {user.avatarUrl ? (
@@ -51,7 +51,7 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
             <button
               key={action}
               title={action}
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-[#5a7a75] hover:bg-black/5 hover:text-[#2d3a38] transition-colors"
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               {idx === 0 && (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -80,7 +80,7 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
       <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-4">
         {/* Day separator */}
         <div className="flex justify-center mb-6">
-          <span className="text-[12px] font-bold text-[#5a7a75] bg-white/50 px-5 py-1.5 rounded-full shadow-sm">
+          <span className="text-[12px] font-bold text-white/90 bg-white/20 backdrop-blur-md px-5 py-1.5 rounded-full shadow-sm border border-white/30">
             Today
           </span>
         </div>
@@ -96,11 +96,11 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
       </div>
 
       {/* Input bar */}
-      <footer className="shrink-0 p-5 lg:p-6 bg-[#F0D9C7] border-t border-[#C7DCC4]/50">
-        <div className="flex items-center gap-3 bg-white/70 backdrop-blur-md rounded-full p-2 pl-4 shadow-sm border border-white">
+      <footer className="shrink-0 p-5 lg:p-6 mb-2">
+        <div className="flex items-center gap-3 bg-white/20 backdrop-blur-xl rounded-full p-2 pl-4 shadow-lg border border-white/30 mx-4">
           
           {/* Emoji */}
-          <button className="shrink-0 w-8 h-8 flex items-center justify-center text-[#5a7a75] hover:text-[#2d3a38] transition-colors" aria-label="Emoji">
+          <button className="shrink-0 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors" aria-label="Emoji">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <path d="M8 14s1.5 2 4 2 4-2 4-2" />
@@ -112,20 +112,20 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
           {/* Input field */}
           <input
             type="text"
-            className="flex-1 min-w-0 h-10 bg-transparent text-[14px] text-[#2d3a38] font-medium placeholder:text-[#5a7a75] focus:outline-none"
+            className="flex-1 min-w-0 h-10 bg-transparent text-[14px] text-white font-medium placeholder:text-white/60 focus:outline-none"
             placeholder="Type your message here..."
             readOnly
           />
 
           {/* Icons container */}
           <div className="flex items-center gap-1 shrink-0">
-            <button className="w-9 h-9 flex items-center justify-center rounded-full text-[#5a7a75] hover:bg-white hover:text-[#2d3a38] transition-colors" aria-label="Camera">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full text-white/80 hover:bg-white/20 hover:text-white transition-colors" aria-label="Camera">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="13" r="4" />
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
               </svg>
             </button>
-            <button className="w-9 h-9 flex items-center justify-center rounded-full text-[#5a7a75] hover:bg-white hover:text-[#2d3a38] transition-colors" aria-label="Gallery">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full text-white/80 hover:bg-white/20 hover:text-white transition-colors" aria-label="Gallery">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
@@ -134,7 +134,7 @@ export default function ChatConversation({ chat }: ChatConversationProps) {
             </button>
             
             {/* Send button */}
-            <button className="w-10 h-10 ml-1 rounded-full flex items-center justify-center bg-[#C7DCC4] text-[#2d3a38] hover:bg-[#D0E7D2] transition-colors shadow-sm" aria-label="Send">
+            <button className="w-10 h-10 ml-1 rounded-full flex items-center justify-center bg-white/30 text-white backdrop-blur-md hover:bg-white/40 border border-white/20 transition-all shadow-md" aria-label="Send">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="-ml-1">
                 <path d="m22 2-7 20-4-9-9-4Z" />
                 <path d="M22 2 11 13" />

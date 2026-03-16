@@ -12,7 +12,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
   const personChats = chats.filter((c) => c.type === "person");
 
   return (
-    <aside className="w-[360px] shrink-0 h-full flex flex-col bg-[#D0E7D2] border-r border-[#C7DCC4]/60 relative z-10">
+    <aside className="w-[360px] shrink-0 h-full flex flex-col bg-transparent relative z-10 mr-4">
       
       {/* Search Header */}
       <header className="px-6 py-6 shrink-0">
@@ -31,7 +31,7 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
           </svg>
           <input
             type="text"
-            className="w-full h-11 pl-11 pr-4 bg-white/40 border border-[#C7DCC4] rounded-2xl text-[14px] text-[#2d3a38] font-medium placeholder:text-[#5a7a75] focus:outline-none focus:ring-2 focus:ring-[#C7DCC4] focus:bg-white/60 transition-all shadow-sm"
+            className="w-full h-11 pl-11 pr-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-[14px] text-white font-medium placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all shadow-sm"
             placeholder="Search"
             readOnly
           />
@@ -42,8 +42,8 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-8 custom-scrollbar">
         
         {/* Groups */}
-        <section>
-          <h3 className="text-xs font-bold text-[#5a7a75] mb-3 px-2 tracking-wider uppercase">
+        <section className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-3 shadow-sm">
+          <h3 className="text-[13px] font-semibold text-white/90 mb-3 px-3 tracking-wide capitalize">
             Groups
           </h3>
           <div className="flex flex-col gap-1">
@@ -58,8 +58,8 @@ export default function ChatSidebar({ activeChatId }: ChatSidebarProps) {
         </section>
 
         {/* Person */}
-        <section>
-          <h3 className="text-xs font-bold text-[#5a7a75] mb-3 px-2 tracking-wider uppercase">
+        <section className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-3 shadow-sm">
+          <h3 className="text-[13px] font-semibold text-white/90 mb-3 px-3 tracking-wide capitalize">
             Person
           </h3>
           <div className="flex flex-col gap-1">
