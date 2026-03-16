@@ -4,6 +4,7 @@ export interface ChatUser {
   id: string;
   name: string;
   initials: string;
+  avatarUrl?: string; // Optional remote image
   avatarColor: string;
   online?: boolean;
   lastSeen?: string;
@@ -35,6 +36,7 @@ export const currentUser: ChatUser = {
   name: "You",
   initials: "YO",
   avatarColor: "#6B8E7B",
+  avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
 };
 
 export const users: Record<string, ChatUser> = {
@@ -45,6 +47,7 @@ export const users: Record<string, ChatUser> = {
     avatarColor: "#D4A574",
     online: true,
     lastSeen: "2:45pm",
+    avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
   amarae: {
     id: "amarae",
@@ -53,6 +56,7 @@ export const users: Record<string, ChatUser> = {
     avatarColor: "#7BA3B8",
     online: false,
     lastSeen: "1:20pm",
+    avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026703d",
   },
   blessing: {
     id: "blessing",
@@ -61,6 +65,7 @@ export const users: Record<string, ChatUser> = {
     avatarColor: "#B89B7A",
     online: true,
     lastSeen: "10:02am",
+    avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026702d",
   },
   tee: {
     id: "tee",
@@ -69,6 +74,7 @@ export const users: Record<string, ChatUser> = {
     avatarColor: "#8B7BAA",
     online: false,
     lastSeen: "Yesterday, 10:45pm",
+    avatarUrl: "https://i.pravatar.cc/150?u=a04258114e29026702d",
   },
   kira: {
     id: "kira",
@@ -124,7 +130,7 @@ export const chats: Chat[] = [
     participants: [users.amarae, users.tee, users.jake],
     lastMessage: "Yo ...what are you guys up to?",
     lastMessageTime: "Yesterday, 12:45pm",
-    unread: 1,
+    unread: 10,
     messages: [
       {
         id: "gf-1",
@@ -197,49 +203,49 @@ export const chats: Chat[] = [
         id: "pw-2",
         senderId: "me",
         text: "Good you?",
-        time: "2:25pm",
+        time: "2:52pm",
         read: true,
       },
       {
         id: "pw-3",
         senderId: "wealth",
         text: "I'm fine",
-        time: "2:31pm",
+        time: "2:52pm",
         read: true,
       },
       {
         id: "pw-4",
         senderId: "wealth",
         text: "What you up to?",
-        time: "2:31pm",
+        time: "2:53pm",
         read: true,
       },
       {
         id: "pw-5",
         senderId: "me",
-        text: "I'm in class",
-        time: "2:35pm",
+        text: "Hahaha ...and u are texting",
+        time: "2:54pm",
         read: true,
       },
       {
         id: "pw-6",
         senderId: "wealth",
-        text: "Hahaha ...and u are texting",
-        time: "2:40pm",
+        text: "I'm in class",
+        time: "2:56pm",
         read: true,
       },
       {
         id: "pw-7",
         senderId: "me",
         text: "Yup",
-        time: "2:42pm",
+        time: "2:58pm",
         read: true,
       },
       {
         id: "pw-8",
         senderId: "me",
         text: "Because I'm sitting at the back",
-        time: "2:45pm",
+        time: "2:59pm",
         read: true,
       },
     ],
@@ -280,6 +286,7 @@ export const chats: Chat[] = [
     participants: [users.tee],
     lastMessage: "I think I'm coming back next week",
     lastMessageTime: "Yesterday, 10:45pm",
+    unread: 1,
     messages: [
       {
         id: "pt-1",
