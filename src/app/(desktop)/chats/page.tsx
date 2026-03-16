@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import { activeChat, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
 import ChatConversation from "@/components/common/chats/ChatConversation";
@@ -47,22 +49,82 @@ const navItems = [
 ];
 
 export default function ChatsPage() {
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isBlurOn, setIsBlurOn] = useState(true);
+
+  // Implement YouTube Iframe API to manually seek and prevent black frames.
+  useEffect(() => {
+    if (!isVideoOn) return;
+
+    let player: any;
+    let intervalId: NodeJS.Timeout;
+
+    const initPlayer = () => {
+      if (!(window as any).YT) return;
+      
+      player = new (window as any).YT.Player("yt-player", {
+        videoId: "o4qjk8_5gmU",
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+          vq: "hd1080",
+          playsinline: 1,
+          loop: 1,
+          playlist: "o4qjk8_5gmU", // Fallback for background tabs
+        },
+        events: {
+          onReady: (event: any) => {
+            event.target.playVideo();
+            intervalId = setInterval(() => {
+              if (player && player.getCurrentTime) {
+                const time = player.getCurrentTime();
+                // Manually trigger loop right before the 7-second mark to bypass the black frame.
+                if (time >= 6.8) {
+                  player.seekTo(0);
+                }
+              }
+            }, 50);
+          },
+        },
+      });
+    };
+
+    if (!(window as any).YT) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(script);
+      (window as any).onYouTubeIframeAPIReady = initPlayer;
+    } else {
+      initPlayer();
+    }
+
+    return () => {
+      clearInterval(intervalId);
+      if (player && typeof player.destroy === "function") {
+        player.destroy();
+      }
+    };
+  }, [isVideoOn]);
+
   return (
-    <main className="fixed inset-0 flex z-0 overflow-hidden bg-black pt-[72px] pb-[88px]">
+    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-[72px] pb-[88px] ${isVideoOn ? 'bg-black' : 'bg-[#E0C9B6]'} ${!isBlurOn ? 'disable-chat-blur' : ''}`}>
 
       {/* Video Background Layer */}
-      <div className="absolute inset-0 z-[-2] pointer-events-none overflow-hidden">
-        <iframe
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-w-[177.77vh] min-h-[100vh] scale-[1.35]"
-          src={`https://www.youtube.com/embed/o4qjk8_5gmU?autoplay=1&mute=1&loop=1&playlist=o4qjk8_5gmU&controls=0&showinfo=0&rel=0&vq=hd1080`}
-          title="Loop Background"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        ></iframe>
-      </div>
+      {isVideoOn && (
+        <div className="absolute inset-0 z-[-2] pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-w-[177.77vh] min-h-[100vh] scale-[1.35] pointer-events-none">
+            <div id="yt-player" className="w-full h-full pointer-events-none" />
+          </div>
+        </div>
+      )}
       
       {/* Dark overlay for contrast */}
-      <div className="absolute inset-0 z-[-1] pointer-events-none bg-black/40" />
+      {isVideoOn && (
+        <div className="absolute inset-0 z-[-1] pointer-events-none bg-black/40" />
+      )}
 
       <div className="flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-2 gap-4 relative z-10">
         
@@ -79,13 +141,31 @@ export default function ChatsPage() {
               <p className="text-[12px] font-medium text-white/70 leading-tight">Select a conversation to start chatting.</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 transition-all rounded-full border border-white/20 text-white text-[13px] font-bold shadow-sm">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14" />
-                <path d="M5 12h14" />
-              </svg>
-              New Chat
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsVideoOn(!isVideoOn)} 
+              className={`w-10 h-10 flex items-center justify-center rounded-full transition-all border shadow-sm ${isVideoOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+              title="Toggle Video Background"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </button>
+            <button
+              onClick={() => setIsBlurOn(!isBlurOn)}
+              className={`w-10 h-10 flex items-center justify-center rounded-full transition-all border shadow-sm ${isBlurOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+              title="Toggle Glassmorphism Blur"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </button>
+            
+            {/* Dummy buttons 3, 4, 5 */}
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/20 text-white shadow-sm" title="Options">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/20 text-white shadow-sm" title="Drafts">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/20 text-white shadow-sm" title="More Info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             </button>
           </div>
         </header>

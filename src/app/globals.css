@@ -128,3 +128,8 @@
     @apply font-sans;
   }
 }
+
+.disable-chat-blur * {
+  --tw-backdrop-blur: blur(0px) !important;
+  backdrop-filter: none !important;
+}
