@@ -6,6 +6,7 @@ import { chats, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
 import ChatConversation from "@/components/common/chats/ChatConversation";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   {
@@ -49,7 +50,7 @@ const navItems = [
 ];
 
 export default function ChatsPage() {
-  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn } = useChatTheme();
+  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn, isControlBarOpen } = useChatTheme();
   const [isMinimized, setIsMinimized] = useState(false);
   
   // Navigation State
@@ -68,58 +69,84 @@ export default function ChatsPage() {
       <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-1 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'} pointer-events-auto`}>
         
         {/* Top Floating Dock Navbar */}
-        <header className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2 shrink-0 relative z-50 transition-all duration-300`}>
-          
-          <button
-            onClick={() => setIsVideoOn(!isVideoOn)} 
-            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isVideoOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
-            title="Toggle Video Background"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-          </button>
-          
-          <button
-            onClick={() => setIsBlurOn(!isBlurOn)}
-            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isBlurOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
-            title="Toggle Glassmorphism Blur"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-          </button>
-          
-          <button 
-            onClick={() => setIsDarkTheme(!isDarkTheme)}
-            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${!isDarkTheme ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
-            title="Toggle Dark/Light Theme"
-          >
-            {isDarkTheme ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <div className="flex flex-col items-center shrink-0 relative z-50">
+          <AnimatePresence mode="wait">
+            {isControlBarOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 300, 
+                  damping: 30,
+                  opacity: { duration: 0.2 }
+                }}
+                className="overflow-hidden w-full flex justify-center pb-4"
+              >
+                <motion.header 
+                  initial={{ y: -20 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: -20 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2`}
+                >
+                  <button
+                    onClick={() => setIsVideoOn(!isVideoOn)} 
+                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isVideoOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
+                    title="Toggle Video Background"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                  </button>
+                  
+                  <button
+                    onClick={() => setIsBlurOn(!isBlurOn)}
+                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isBlurOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
+                    title="Toggle Glassmorphism Blur"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                  </button>
+                  
+                  <button 
+                    onClick={() => setIsDarkTheme(!isDarkTheme)}
+                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${!isDarkTheme ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
+                    title="Toggle Dark/Light Theme"
+                  >
+                    {isDarkTheme ? (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    ) : (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    )}
+                  </button>
+                  
+                  <button 
+                    onClick={() => setIsMusicOn(!isMusicOn)}
+                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isMusicOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
+                    title="Toggle Background Music"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                  </button>
+                  
+                  <div className={`w-px h-8 ${borderColor} mx-1`} />
+        
+                  <button
+                    onClick={() => setIsMinimized(true)}
+                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border border-transparent shadow-sm ${hoverBg} hover:${borderColor} ${textColor}`}
+                    title="Minimize to Widget"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                  </button>
+                </motion.header>
+              </motion.div>
             )}
-          </button>
-          
-          <button 
-            onClick={() => setIsMusicOn(!isMusicOn)}
-            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isMusicOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
-            title="Toggle Background Music"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          </button>
-          
-          <div className={`w-px h-8 ${borderColor} mx-1`} />
-
-          <button
-            onClick={() => setIsMinimized(true)}
-            className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border border-transparent shadow-sm ${hoverBg} hover:${borderColor} ${textColor}`}
-            title="Minimize to Widget"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          </button>
-          
-        </header>
+          </AnimatePresence>
+        </div>
 
         {/* Main Glassmorphic Window Container */}
-        <div className={`flex w-full flex-1 ${containerBg} border ${borderColor} rounded-[2rem] shadow-2xl overflow-hidden p-2 gap-2 transition-all duration-300 relative z-10 -mt-2`}>
+        <motion.div 
+          layout
+          className={`flex w-full flex-1 ${containerBg} border ${borderColor} rounded-[2rem] shadow-2xl overflow-hidden p-2 gap-2 relative z-10 transition-colors duration-500`}
+        >
           
           {/* ─ Vertical Nav Strip ─ */}
           <nav className={`w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-inner transition-colors duration-300`}>
@@ -186,8 +213,7 @@ export default function ChatsPage() {
           {activeNav === "ContactProfile" && <ContactProfileView chat={activeChat} />}
           {activeNav === "Friends" && <FriendsView />}
           {activeNav === "History" && <HistoryView />}
-
-        </div>
+        </motion.div>
       </div>
     </main>
   );

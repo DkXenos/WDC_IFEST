@@ -31,6 +31,10 @@ type ChatThemeContextType = {
   currentSongIndex: number;
   setCurrentSongIndex: (v: number) => void;
   PLAYLIST: Array<{ title: string, src: string }>;
+
+  // Control Bar State
+  isControlBarOpen: boolean;
+  setIsControlBarOpen: (v: boolean) => void;
 };
 
 export const PLAYLIST = [
@@ -57,6 +61,9 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   // Audio BGM State
   const [isMusicOn, setIsMusicOn] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+  // Control Bar State
+  const [isControlBarOpen, setIsControlBarOpen] = useState(false);
 
   // Randomize initial song on client-side mount only to prevent hydration errors
   React.useEffect(() => {
@@ -85,7 +92,8 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
       isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn,
       activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos, isVideoOn, setIsVideoOn,
       containerBg, panelBg, borderColor, textColor, mutedTextColor, hoverBg, activeBg, emeraldBg, emeraldText,
-      isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST
+      isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST,
+      isControlBarOpen, setIsControlBarOpen
     }}>
       {children}
     </ChatThemeContext.Provider>

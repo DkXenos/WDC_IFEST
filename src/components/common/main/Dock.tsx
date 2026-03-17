@@ -3,15 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { 
-  FiHome, 
-  FiMessageSquare, 
-  FiSettings, 
-  FiCalendar,
-  FiFolder,
-  FiUser
-} from "react-icons/fi";
+import { FiHome, FiMessageSquare, FiSettings, FiCalendar, FiFolder, FiUser } from "react-icons/fi";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 
 const dockItems = [
   { icon: FiHome, label: "Home", href: "/" },
@@ -24,6 +18,7 @@ const dockItems = [
 
 export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { isControlBarOpen, setIsControlBarOpen } = useChatTheme();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -43,6 +38,12 @@ export default function Dock() {
                     href={item.href}
                     className="group relative flex flex-col items-center justify-end"
                     onMouseEnter={() => setHoveredIndex(index)}
+                    onClick={(e) => {
+                      if (item.label === "Settings") {
+                        e.preventDefault();
+                        setIsControlBarOpen(!isControlBarOpen);
+                      }
+                    }}
                   >
                     {/* Icon Container with macOS dock scaling effect */}
                     <div
@@ -52,7 +53,8 @@ export default function Dock() {
                           ? "w-16 h-16 -translate-y-2"
                           : isNeighbor
                           ? "w-14 h-14 -translate-y-1"
-                          : "w-12 h-12"
+                          : "w-12 h-12",
+                        item.label === "Settings" && isControlBarOpen && "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black"
                       )}
                     >
                       <item.icon
@@ -62,7 +64,8 @@ export default function Dock() {
                             ? "w-8 h-8 text-black dark:text-white" 
                             : isNeighbor 
                             ? "w-7 h-7 text-neutral-700 dark:text-neutral-200" 
-                            : "w-6 h-6 text-neutral-600 dark:text-neutral-300"
+                            : "w-6 h-6 text-neutral-600 dark:text-neutral-300",
+                          item.label === "Settings" && isControlBarOpen && "text-emerald-500"
                         )}
                       />
                     </div>
