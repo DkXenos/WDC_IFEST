@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-export type WindowID = "notes" | "timer" | "tasks" | "forum";
+export type WindowID = "notes" | "timer" | "tasks" | "forum" | "chats" | "calendar" | "files" | "profile" | "settings";
 
 type WindowContextType = {
   openWindows: Set<WindowID>;

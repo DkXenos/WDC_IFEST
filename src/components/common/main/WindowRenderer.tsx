@@ -7,6 +7,11 @@ import NotesAIWindow from "./windows/NotesAIWindow";
 import StudyModeWindow from "./windows/StudyModeWindow";
 import TaskManagerWindow from "./windows/TaskManagerWindow";
 import ForumWindow from "./windows/ForumWindow";
+import ChatsWindow from "./windows/ChatsWindow";
+import CalendarWindow from "./windows/CalendarWindow";
+import FilesWindow from "./windows/FilesWindow";
+import ProfileWindow from "./windows/ProfileWindow";
+import SettingsWindow from "./windows/SettingsWindow";
 
 export default function WindowRenderer() {
   const { openWindows } = useWindows();
@@ -28,6 +33,16 @@ export default function WindowRenderer() {
               return <TaskManagerWindow key={id} />;
             case "forum":
               return <ForumWindow key={id} />;
+            case "chats":
+              return <ChatsWindow key={id} />;
+            case "calendar":
+              return <CalendarWindow key={id} />;
+            case "files":
+              return <FilesWindow key={id} />;
+            case "profile":
+              return <ProfileWindow key={id} />;
+            case "settings":
+              return <SettingsWindow key={id} />;
             default:
               return null;
           }

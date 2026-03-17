@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-
+import React, { useState, useMemo, useEffect } from "react";
+import Window from "../Window";
 import { chats, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
 import ChatConversation from "@/components/common/chats/ChatConversation";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { FiMessageSquare } from "react-icons/fi";
 
 const navItems = [
   {
@@ -49,9 +50,8 @@ const navItems = [
   },
 ];
 
-export default function ChatsPage() {
-  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn, isControlBarOpen } = useChatTheme();
-  const [isMinimized, setIsMinimized] = useState(false);
+export default function ChatsWindow() {
+  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn, isControlBarOpen } = useChatTheme();
   
   // Navigation State
   const [activeNav, setActiveNav] = useState("Chats");
@@ -61,170 +61,91 @@ export default function ChatsPage() {
   const activeChat = useMemo(() => chats.find(c => c.id === activeChatId) || chats[0], [activeChatId]);
 
   return (
-    <main className="fixed inset-0 flex z-10 overflow-hidden pt-4 pb-28 lg:pb-32 pointer-events-none">
-
-      {/* Relax Widget (Active when Minimized) */}
-      <RelaxWidget isVisible={isMinimized} onRestore={() => setIsMinimized(false)} />
-
-      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-1 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'} pointer-events-auto`}>
+    <Window 
+      id="chats" 
+      title="Messages" 
+      icon={<FiMessageSquare size={16} />} 
+      width="95vw" 
+      height="85vh" // Use large sizing similar to the main screen
+    >
+      <div className={`flex w-full h-full overflow-hidden p-2 gap-2 relative z-10 transition-colors duration-500 bg-transparent`}>
         
-        {/* Top Floating Dock Navbar */}
-        <div className="flex flex-col items-center shrink-0 relative z-50">
-          <AnimatePresence mode="wait">
-            {isControlBarOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 300, 
-                  damping: 30,
-                  opacity: { duration: 0.2 }
-                }}
-                className="overflow-hidden w-full flex justify-center pb-4"
-              >
-                <motion.header 
-                  initial={{ y: -20 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: -20 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2`}
-                >
-                  <button
-                    onClick={() => setIsVideoOn(!isVideoOn)} 
-                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isVideoOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
-                    title="Toggle Video Background"
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                  </button>
-                  
-                  <button
-                    onClick={() => setIsBlurOn(!isBlurOn)}
-                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isBlurOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`}
-                    title="Toggle Glassmorphism Blur"
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-                  </button>
-                  
-                  <button 
-                    onClick={() => setIsDarkTheme(!isDarkTheme)}
-                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${!isDarkTheme ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
-                    title="Toggle Dark/Light Theme"
-                  >
-                    {isDarkTheme ? (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                    ) : (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                    )}
-                  </button>
-                  
-                  <button 
-                    onClick={() => setIsMusicOn(!isMusicOn)}
-                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border shadow-sm ${isMusicOn ? 'bg-emerald-500/80 border-emerald-400 text-white' : `${hoverBg} border-transparent hover:${borderColor} ${textColor}`}`} 
-                    title="Toggle Background Music"
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                  </button>
-                  
-                  <div className={`w-px h-8 ${borderColor} mx-1`} />
-        
-                  <button
-                    onClick={() => setIsMinimized(true)}
-                    className={`w-[52px] h-[52px] flex items-center justify-center rounded-2xl transition-all border border-transparent shadow-sm ${hoverBg} hover:${borderColor} ${textColor}`}
-                    title="Minimize to Widget"
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-                  </button>
-                </motion.header>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Main Glassmorphic Window Container */}
-        <motion.div 
-          layout
-          className={`flex w-full flex-1 ${containerBg} border ${borderColor} rounded-[2rem] shadow-2xl overflow-hidden p-2 gap-2 relative z-10 transition-colors duration-500`}
-        >
+        {/* ─ Vertical Nav Strip ─ */}
+        <nav className={`w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-inner transition-colors duration-300`}>
           
-          {/* ─ Vertical Nav Strip ─ */}
-          <nav className={`w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-inner transition-colors duration-300`}>
-            
-            {/* User avatar */}
-            <div 
-              className={`relative mb-4 cursor-pointer rounded-[18px] transition-all duration-300 ${activeNav === "Profile" ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-transparent scale-[1.05]' : 'hover:scale-[1.02]'}`}
-              onClick={() => setActiveNav("Profile")}
-              title="View Profile"
-            >
-              {currentUser.avatarUrl ? (
-                <img src={currentUser.avatarUrl} alt="User" className="w-[52px] h-[52px] rounded-[18px] object-cover shadow-sm border border-white/20" />
-              ) : (
-                <div className="w-[52px] h-[52px] rounded-[18px] bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-sm shadow-sm border border-white/20">
-                  {currentUser.initials}
-                </div>
-              )}
-              <div className="absolute -bottom-1 -right-1 w-[18px] h-[18px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-300 to-emerald-500 rounded-full border-[3px] border-white/80" />
-            </div>
+          {/* User avatar */}
+          <div 
+            className={`relative mb-4 cursor-pointer rounded-[18px] transition-all duration-300 ${activeNav === "Profile" ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-transparent scale-[1.05]' : 'hover:scale-[1.02]'}`}
+            onClick={() => setActiveNav("Profile")}
+            title="View Profile"
+          >
+            {currentUser.avatarUrl ? (
+              <img src={currentUser.avatarUrl} alt="User" className="w-[52px] h-[52px] rounded-[18px] object-cover shadow-sm border border-white/20" />
+            ) : (
+              <div className="w-[52px] h-[52px] rounded-[18px] bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-sm shadow-sm border border-white/20">
+                {currentUser.initials}
+              </div>
+            )}
+            <div className="absolute -bottom-1 -right-1 w-[18px] h-[18px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-300 to-emerald-500 rounded-full border-[3px] border-white/80" />
+          </div>
 
-            {/* Icons */}
-            <div className="flex flex-col gap-3 flex-1 items-center w-full">
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  title={item.label}
-                  onClick={() => setActiveNav(item.label)}
-                  className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center transition-all ${
-                    item.label === activeNav
-                      ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
-                      : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
-                  }`}
-                >
-                  {item.icon}
-                </button>
-              ))}
-            </div>
+          {/* Icons */}
+          <div className="flex flex-col gap-3 flex-1 items-center w-full">
+            {navItems.map((item) => (
+              <button
+                key={item.label}
+                title={item.label}
+                onClick={() => setActiveNav(item.label)}
+                className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center transition-all ${
+                  item.label === activeNav
+                    ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
+                    : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
+                }`}
+              >
+                {item.icon}
+              </button>
+            ))}
+          </div>
 
-            {/* Bottom clock icon */}
-            <button
-              title="History"
-              onClick={() => setActiveNav("History")}
-              className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center mt-auto transition-all ${
-                activeNav === "History" 
-                  ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
-                  : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
-              }`}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </button>
-          </nav>
+          {/* Bottom clock icon */}
+          <button
+            title="History"
+            onClick={() => setActiveNav("History")}
+            className={`w-[52px] h-[52px] rounded-2xl flex items-center justify-center mt-auto transition-all ${
+              activeNav === "History" 
+                ? "bg-emerald-500/20 text-emerald-400 shadow-md font-semibold border border-emerald-500/30"
+                : `${mutedTextColor} hover:${textColor} ${hoverBg} border border-transparent hover:${borderColor}`
+            }`}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </button>
+        </nav>
 
-          {/* ─ Sidebar (Groups / Person) ─ */}
-          <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
+        {/* ─ Sidebar (Groups / Person) ─ */}
+        <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
 
-          {/* ─ Dynamic Main Area ─ */}
-          {activeNav === "Chats" && <ChatConversation chat={activeChat} onViewProfile={() => setActiveNav("ContactProfile")} />}
-          {activeNav === "Notifications" && <NotificationsView />}
-          {activeNav === "Settings" && <SettingsView />}
-          {activeNav === "Profile" && <UserProfileView />}
-          {activeNav === "ContactProfile" && <ContactProfileView chat={activeChat} />}
-          {activeNav === "Friends" && <FriendsView />}
-          {activeNav === "History" && <HistoryView />}
-        </motion.div>
+        {/* ─ Dynamic Main Area ─ */}
+        {activeNav === "Chats" && <ChatConversation chat={activeChat} onViewProfile={() => setActiveNav("ContactProfile")} />}
+        {activeNav === "Notifications" && <NotificationsView />}
+        {activeNav === "Settings" && <SettingsView />}
+        {activeNav === "Profile" && <UserProfileView />}
+        {activeNav === "ContactProfile" && <ContactProfileView chat={activeChat} />}
+        {activeNav === "Friends" && <FriendsView />}
+        {activeNav === "History" && <HistoryView />}
       </div>
-    </main>
+    </Window>
   );
 }
 
-// ─── Auxiliary Views ─────────────────────────────────────────────────────────
+// Aux Views (extracted from previous full page implementation)
 
 function NotificationsView() {
   const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldText } = useChatTheme();
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
       <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
         <h2 className={`text-[16px] font-bold ${textColor}`}>Notifications & Mentions</h2>
       </header>
@@ -264,23 +185,20 @@ const BACKGROUND_OPTIONS = [
 function SettingsView() {
   const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText, activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos, isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST } = useChatTheme();
   
-  // Settings Tab State
   const [activeTab, setActiveTab] = useState<'Appearance' | 'Music'>('Appearance');
-  
   const [isBgMenuOpen, setIsBgMenuOpen] = useState(false);
 
   const handleVideoSelect = (id: string, exp: number) => {
     if (unlockedVideos.includes(id)) {
       setActiveVideoId(id);
     } else {
-      // Simulate Unlocking statically via prompt logic
       setUnlockedVideos([...unlockedVideos, id]);
       setActiveVideoId(id);
     }
   };
 
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
       <header className={`h-[84px] shrink-0 flex items-center justify-between px-8 border-b ${borderColor}`}>
         <h2 className={`text-[16px] font-bold ${textColor}`}>Settings</h2>
         
@@ -298,7 +216,6 @@ function SettingsView() {
           
           <div className={`p-2 rounded-[1.75rem] border ${borderColor} shadow-sm transition-all duration-300`}>
             
-            {/* Header / Trigger */}
             <div 
               onClick={() => setIsBgMenuOpen(!isBgMenuOpen)}
               className={`p-4 flex items-center justify-between ${hoverBg} rounded-[1.25rem] cursor-pointer transition-colors active:scale-[0.98] duration-200`}
@@ -317,7 +234,6 @@ function SettingsView() {
               </div>
             </div>
 
-            {/* Expandable Options UI */}
             <div className={`grid transition-all duration-300 ease-in-out ${isBgMenuOpen ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0 mt-0 pointer-events-none'}`}>
               <div className="overflow-hidden">
                 <div className="flex flex-col gap-2 p-2">
@@ -335,7 +251,6 @@ function SettingsView() {
                             : `${hoverBg} border-transparent hover:${borderColor}`
                         }`}
                       >
-                        {/* Thumbnail Bubble */}
                         <div className={`w-20 h-12 rounded-xl overflow-hidden shadow-sm relative shrink-0 ${!isUnlocked ? 'grayscale blur-[2px] opacity-60' : ''} transition-all duration-500`}>
                           <img src={bg.img} alt={bg.title} className="w-full h-full object-cover" />
                           {!isUnlocked && (
@@ -345,7 +260,6 @@ function SettingsView() {
                           )}
                         </div>
 
-                        {/* Title / Info */}
                         <div className="flex-1 min-w-0">
                           <h5 className={`text-[14px] font-bold tracking-tight truncate ${isActive ? emeraldText : textColor}`}>
                             {bg.title}
@@ -372,7 +286,6 @@ function SettingsView() {
           </div>
         )}
 
-        {/* Music Tab Settings */}
         {activeTab === 'Music' && (
           <div>
             <div className="flex items-center justify-between mb-4 px-2">
@@ -403,7 +316,6 @@ function SettingsView() {
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      {/* Track Icon */}
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-colors ${isActive ? 'bg-emerald-500 text-white' : 'bg-black/10 text-white/60'}`}>
                         {isActive && isMusicOn ? (
                           <div className="flex items-end gap-1 h-4">
@@ -440,7 +352,7 @@ function SettingsView() {
 function UserProfileView() {
   const { panelBg, borderColor, textColor, mutedTextColor, emeraldBg, emeraldText } = useChatTheme();
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300`}>
       <div className="flex flex-col items-center max-w-sm text-center w-full px-4">
         <div className="relative mb-6">
           {currentUser.avatarUrl ? (
@@ -483,12 +395,12 @@ function UserProfileView() {
 }
 
 function ContactProfileView({ chat }: { chat: any }) {
-  const { panelBg, borderColor, textColor, mutedTextColor, emeraldText, hoverBg } = useChatTheme();
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldText } = useChatTheme();
   const user = chat.type === "person" ? chat.participants.find((p: any) => p.id !== "me") : chat;
   const isGroup = chat.type === "group";
 
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-y-auto custom-scrollbar relative`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col items-center justify-center z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300 overflow-y-auto custom-scrollbar relative`}>
       <div className="flex flex-col items-center max-w-sm text-center py-10 w-full px-4">
         <div className="relative mb-6">
           {user.avatarUrl ? (
@@ -507,8 +419,6 @@ function ContactProfileView({ chat }: { chat: any }) {
         <p className={`text-[14px] font-medium ${isGroup ? mutedTextColor : (user.online ? emeraldText : mutedTextColor)} mt-1 mb-8`}>
           {isGroup ? `${chat.participants.length} Members` : (user.online ? 'Online' : `Last seen ${user.lastSeen}`)}
         </p>
-
-
 
         {isGroup && (
           <div className={`w-full text-left p-6 rounded-3xl border ${borderColor} shadow-sm bg-black/5`}>
@@ -548,7 +458,7 @@ function FriendsView() {
   ];
 
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
       <header className={`h-[84px] shrink-0 flex items-center justify-between px-8 border-b ${borderColor}`}>
         <h2 className={`text-[16px] font-bold ${textColor}`}>Add Friends</h2>
         <div className={`flex bg-black/10 dark:bg-black/40 p-1 rounded-[1.25rem] border ${borderColor}`}>
@@ -594,16 +504,15 @@ function FriendsView() {
 }
 
 function HistoryView() {
-  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText } = useChatTheme();
+  const { panelBg, borderColor, textColor, mutedTextColor, emeraldText } = useChatTheme();
   
   return (
-    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mt-4 mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
+    <section className={`flex-1 h-full min-w-0 flex flex-col z-20 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-sm mr-4 mx-2 transition-colors duration-300 overflow-hidden`}>
       <header className={`h-[84px] shrink-0 flex items-center px-8 border-b ${borderColor}`}>
         <h2 className={`text-[16px] font-bold ${textColor}`}>Activity History</h2>
       </header>
       <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 custom-scrollbar bg-black/5">
         
-        {/* Mock History Timeline */}
         <div>
           <h3 className={`text-[13px] font-bold ${mutedTextColor} uppercase tracking-wider mb-4 px-2`}>Today</h3>
           <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-white/10 before:to-transparent">
@@ -652,43 +561,5 @@ function HistoryView() {
 
       </div>
     </section>
-  );
-}
-
-function RelaxWidget({ isVisible, onRestore }: { isVisible: boolean, onRestore: () => void }) {
-  const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldBg, emeraldText } = useChatTheme();
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    if (!isVisible) return;
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, [isVisible]);
-
-  return (
-    <div 
-      className={`fixed inset-0 z-40 flex items-center justify-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-    >
-      <div 
-        onClick={onRestore}
-        className={`pointer-events-auto flex flex-col items-center justify-center p-12 ${panelBg} backdrop-blur-3xl rounded-[3rem] border ${borderColor} shadow-2xl cursor-pointer group transition-transform hover:scale-105 active:scale-95`}
-      >
-        <div className={`text-6xl md:text-8xl font-black tracking-tighter ${textColor} mb-2`}>
-          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </div>
-        <div className={`text-lg md:text-xl font-medium ${mutedTextColor} mb-8 uppercase tracking-widest`}>
-          {time.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
-        </div>
-        
-        <div className={`px-6 py-3 rounded-full flex items-center gap-3 bg-black/20 dark:bg-black/40 border ${borderColor} ${textColor}`}>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-semibold text-sm tracking-wide">Take a break</span>
-        </div>
-
-        <div className={`absolute -bottom-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${emeraldBg} ${emeraldText} px-6 py-2 rounded-full text-sm font-bold shadow-lg`}>
-          Click to Restore
-        </div>
-      </div>
-    </div>
   );
 }
