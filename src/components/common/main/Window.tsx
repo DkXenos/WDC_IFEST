@@ -31,6 +31,9 @@ export default function Window({ id, title, icon, children, width = "600px", hei
   const { containerBg, borderColor, textColor, panelBg, hoverBg } = useChatTheme();
   const { closeWindow, focusedWindow, setFocusedWindow } = useWindows();
   const controls = useDragControls();
+  const [resizedWidth, setResizedWidth] = React.useState<number | null>(null);
+  const [resizedHeight, setResizedHeight] = React.useState<number | null>(null);
+  const resizingRef = React.useRef(false);
 
   const isFocused = focusedWindow === id;
 
@@ -39,9 +42,44 @@ export default function Window({ id, title, icon, children, width = "600px", hei
 
     return Boolean(
       target.closest(
-        "button, a, input, textarea, select, summary, [role='button'], [data-no-drag='true'], [contenteditable='true']"
+        "button, a, input, textarea, select, summary, [role='button'], [data-no-drag='true'], [data-resize-handle='true'], [contenteditable='true']"
       )
     );
+  };
+
+  const handleResizeStart = (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const target = e.currentTarget.parentElement;
+    if (!target) return;
+
+    resizingRef.current = true;
+
+    const startRect = target.getBoundingClientRect();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const minWidth = 360;
+    const minHeight = 280;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const deltaX = event.clientX - startX;
+      const deltaY = event.clientY - startY;
+      const maxWidth = Math.max(minWidth, window.innerWidth - 24);
+      const maxHeight = Math.max(minHeight, window.innerHeight - 24);
+
+      setResizedWidth(Math.min(maxWidth, Math.max(minWidth, startRect.width + deltaX)));
+      setResizedHeight(Math.min(maxHeight, Math.max(minHeight, startRect.height + deltaY)));
+    };
+
+    const handlePointerUp = () => {
+      resizingRef.current = false;
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
   };
 
   return (
@@ -55,7 +93,7 @@ export default function Window({ id, title, icon, children, width = "600px", hei
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         onPointerDownCapture={(e) => {
-          if (!hideTitleBar) return;
+          if (resizingRef.current) return;
           if (e.button !== 0) return;
           if (shouldSkipSurfaceDrag(e.target)) return;
           controls.start(e);
@@ -63,8 +101,8 @@ export default function Window({ id, title, icon, children, width = "600px", hei
         onPointerDown={() => setFocusedWindow(id)}
         style={{ 
           zIndex: isFocused ? 100 : 50,
-          width,
-          height
+          width: resizedWidth ? `${resizedWidth}px` : width,
+          height: resizedHeight ? `${resizedHeight}px` : height,
         }}
         className={`fixed top-20 left-1/4 flex flex-col ${containerBg} border ${borderColor} rounded-2xl shadow-2xl overflow-hidden backdrop-blur-2xl transition-shadow duration-300 ${isFocused ? 'shadow-emerald-500/10' : ''}`}
       >
@@ -103,6 +141,18 @@ export default function Window({ id, title, icon, children, width = "600px", hei
         <div className="flex-1 overflow-hidden pointer-events-auto">
           {children}
         </div>
+
+        {/* macOS-like resize corner */}
+        <button
+          type="button"
+          aria-label="Resize window"
+          data-resize-handle="true"
+          onPointerDown={handleResizeStart}
+          className="absolute right-1 bottom-1 z-40 h-4 w-4 cursor-nwse-resize rounded-sm opacity-70 transition-opacity hover:opacity-100"
+        >
+          <span className="absolute bottom-0.5 right-0.5 h-0.5 w-2.5 rounded bg-white/45" />
+          <span className="absolute bottom-1.5 right-0.5 h-0.5 w-1.5 rounded bg-white/45" />
+        </button>
       </motion.div>
     </WindowDragContext.Provider>
   );
