@@ -5,19 +5,32 @@ import Window, { WindowDragHandle } from "../Window";
 import { FiFolder, FiFileText, FiImage, FiVideo, FiSearch } from "react-icons/fi";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 import { useWindows } from "../WindowContext";
+import { useFileSystem, VirtualFile } from "../FileSystemContext";
 
 const MOCK_FILES = [
-  { id: 1, name: "Project Proposal.pdf", type: "pdf", icon: FiFileText, date: "Today, 10:24 AM", size: "2.4 MB" },
-  { id: 2, name: "UI Architecture.fig", type: "design", icon: FiImage, date: "Yesterday, 3:15 PM", size: "15.8 MB" },
-  { id: 3, name: "Meeting Notes.docx", type: "doc", icon: FiFileText, date: "Oct 12, 2026", size: "12 KB" },
-  { id: 4, name: "Demo Recording.mp4", type: "video", icon: FiVideo, date: "Oct 10, 2026", size: "142.5 MB" },
-  { id: 5, name: "Assets", type: "folder", icon: FiFolder, date: "Oct 8, 2026", size: "--" },
-  { id: 6, name: "Client Logo.png", type: "image", icon: FiImage, date: "Oct 5, 2026", size: "4.1 MB" },
+  { id: "m1", name: "Project Proposal.pdf", type: "pdf", icon: FiFileText, date: "Today, 10:24 AM", size: "2.4 MB" },
+  { id: "m2", name: "UI Architecture.fig", type: "design", icon: FiImage, date: "Yesterday, 3:15 PM", size: "15.8 MB" },
+  { id: "m3", name: "Meeting Notes.docx", type: "doc", icon: FiFileText, date: "Oct 12, 2026", size: "12 KB" },
+  { id: "m4", name: "Demo Recording.mp4", type: "video", icon: FiVideo, date: "Oct 10, 2026", size: "142.5 MB" },
+  { id: "m5", name: "Assets", type: "folder", icon: FiFolder, date: "Oct 8, 2026", size: "--" },
+  { id: "m6", name: "Client Logo.png", type: "image", icon: FiImage, date: "Oct 5, 2026", size: "4.1 MB" },
 ];
 
 export default function FilesWindow() {
   const { borderColor, panelBg, hoverBg, activeBg, mutedTextColor, textColor } = useChatTheme();
-  const { closeWindow } = useWindows();
+  const { closeWindow, toggleWindow, isWindowOpen } = useWindows();
+  const { files, setActiveFileId } = useFileSystem();
+
+  const handleFileClick = (file: any) => {
+    if (file.type === 'note') {
+      setActiveFileId(file.id);
+      if (!isWindowOpen("notes")) {
+        toggleWindow("notes");
+      }
+    }
+  };
+
+  const allFiles = [...files.map(f => ({ ...f, icon: FiFileText })), ...MOCK_FILES];
 
   return (
     <Window 
@@ -92,13 +105,14 @@ export default function FilesWindow() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    {MOCK_FILES.map((file) => (
+                    {allFiles.map((file) => (
                     <div 
                         key={file.id} 
+                        onDoubleClick={() => handleFileClick(file)}
                         className={`grid grid-cols-5 items-center gap-4 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${hoverBg} group`}
                     >
                         <div className="col-span-2 flex items-center gap-3">
-                        <file.icon size={18} className={`shrink-0 ${file.type === 'folder' ? 'text-blue-400 fill-blue-400/20' : file.type === 'pdf' ? 'text-red-400' : 'text-neutral-400'}`} />
+                        <file.icon size={18} className={`shrink-0 ${file.type === 'folder' ? 'text-blue-400 fill-blue-400/20' : file.type === 'pdf' ? 'text-red-400' : file.type === 'note' ? 'text-emerald-400' : 'text-neutral-400'}`} />
                         <span className={`text-[13px] font-medium truncate ${textColor}`}>{file.name}</span>
                         </div>
                         <div className={`text-[12px] font-medium ${mutedTextColor} truncate`}>{file.date}</div>

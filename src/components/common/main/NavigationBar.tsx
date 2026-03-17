@@ -85,7 +85,13 @@ export default function NavigationBar() {
 
   const [isNotificationsOff, setIsNotificationsOff] = useState(false);
   return (
-    <nav data-tutorial-id="navbar" className="fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5">
+    <nav 
+      data-tutorial-id="navbar" 
+      className={cn(
+        "fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5 transition-all duration-500",
+        isZenMode ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
+      )}
+    >
       <div className={`mx-auto flex w-full max-w-400 items-center justify-between gap-2 rounded-2xl border ${borderColor} ${containerBg} px-3 py-2 shadow-xl backdrop-blur-sm sm:gap-4 sm:px-4`}>
       <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {leftNavLinks.map((link) => {

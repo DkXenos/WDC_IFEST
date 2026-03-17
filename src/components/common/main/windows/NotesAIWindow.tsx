@@ -4,12 +4,35 @@ import React, { useState } from "react";
 import Window from "../Window";
 import { FiCpu, FiFileText, FiZap, FiBookOpen } from "react-icons/fi";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { useFileSystem } from "../FileSystemContext";
+import { FiSave } from "react-icons/fi";
 
 export default function NotesAIWindow() {
   const { isDarkTheme, textColor, mutedTextColor, borderColor, hoverBg, panelBg, emeraldBg, emeraldText } = useChatTheme();
+  const { saveFile, activeFileId, openedFileContent, setActiveFileId } = useFileSystem();
+  
   const [note, setNote] = useState("");
   const [aiInsight, setAiInsight] = useState("Write something to get AI insights...");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [fileName, setFileName] = useState("notes.md");
+
+  // Load file content when activeFileId changes
+  React.useEffect(() => {
+    if (openedFileContent !== null) {
+      setNote(openedFileContent);
+    }
+  }, [openedFileContent]);
+
+  const handleSave = () => {
+    if (!note.trim()) return;
+    saveFile(fileName, note);
+  };
+
+  const handleNew = () => {
+    setNote("");
+    setFileName("notes.md");
+    setActiveFileId(null);
+  };
 
   const handleAIAction = (action: string) => {
     setIsProcessing(true);
@@ -41,9 +64,32 @@ export default function NotesAIWindow() {
       <div className="flex h-full divide-x divide-white/10 overflow-hidden">
         {/* Editor Pane */}
         <div className="flex-1 flex flex-col min-w-0">
-          <div className={`h-10 px-4 flex items-center gap-2 border-b ${borderColor} ${panelBg}`}>
-            <FiFileText size={14} className={mutedTextColor} />
-            <span className={`text-[11px] font-bold uppercase tracking-widest ${mutedTextColor}`}>Draft / notes.md</span>
+          <div className={`h-10 px-4 flex items-center justify-between border-b ${borderColor} ${panelBg}`}>
+            <div className="flex items-center gap-2">
+              <FiFileText size={14} className={mutedTextColor} />
+              <input 
+                value={fileName}
+                onChange={(e) => setFileName(e.target.value)}
+                className={`text-[11px] font-bold uppercase tracking-widest bg-transparent border-none outline-none ${mutedTextColor} w-40`}
+                placeholder="filename.md"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handleNew}
+                className={`p-1.5 rounded-lg hover:${hoverBg} text-blue-500 transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider`}
+              >
+                <FiZap size={14} className="rotate-12" />
+                New
+              </button>
+              <button 
+                onClick={handleSave}
+                className={`p-1.5 rounded-lg hover:${hoverBg} text-emerald-500 transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider`}
+              >
+                <FiSave size={14} />
+                Save
+              </button>
+            </div>
           </div>
           <textarea
             value={note}
