@@ -32,14 +32,6 @@ export default function NavigationBar() {
       title: "FILE",
       href: "/",
     },
-    {
-      title: "EDIT",
-      href: "/about",
-    },
-    {
-      title: "CONTACT",
-      href: "/contact",
-    },
   ];
   const middleNavLinks = [
     {
