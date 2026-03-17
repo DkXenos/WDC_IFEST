@@ -3,13 +3,22 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { FiHome, FiMessageSquare, FiSettings, FiCalendar, FiFolder, FiUser } from "react-icons/fi";
+import { FiHome, FiMessageSquare, FiSettings, FiCalendar, FiFolder, FiUser, FiCpu, FiClock, FiTarget, FiUsers } from "react-icons/fi";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { useWindows, WindowID } from "./WindowContext";
 
-const dockItems = [
+type DockItem = 
+  | { icon: any; label: string; href: string }
+  | { icon: any; label: string; id: WindowID };
+
+const dockItems: DockItem[] = [
   { icon: FiHome, label: "Home", href: "/" },
   { icon: FiMessageSquare, label: "Chats", href: "/chats" },
+  { icon: FiCpu, label: "AI Notes", id: "notes" },
+  { icon: FiClock, label: "Focus", id: "timer" },
+  { icon: FiTarget, label: "Quests", id: "tasks" },
+  { icon: FiUsers, label: "Forum", id: "forum" },
   { icon: FiCalendar, label: "Calendar", href: "/calendar" },
   { icon: FiFolder, label: "Files", href: "/files" },
   { icon: FiUser, label: "Profile", href: "/profile" },
@@ -19,6 +28,7 @@ const dockItems = [
 export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { isControlBarOpen, setIsControlBarOpen } = useChatTheme();
+  const { toggleWindow, isWindowOpen } = useWindows();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -35,13 +45,16 @@ export default function Dock() {
               <Tooltip key={item.label}>
                 <TooltipTrigger asChild>
                   <Link
-                    href={item.href}
+                    href={"href" in item ? item.href : "#"}
                     className="group relative flex flex-col items-center justify-end"
                     onMouseEnter={() => setHoveredIndex(index)}
                     onClick={(e) => {
                       if (item.label === "Settings") {
                         e.preventDefault();
                         setIsControlBarOpen(!isControlBarOpen);
+                      } else if ("id" in item) {
+                        e.preventDefault();
+                        toggleWindow(item.id);
                       }
                     }}
                   >
@@ -54,7 +67,7 @@ export default function Dock() {
                           : isNeighbor
                           ? "w-14 h-14 -translate-y-1"
                           : "w-12 h-12",
-                        item.label === "Settings" && isControlBarOpen && "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black"
+                        ((item.label === "Settings" && isControlBarOpen) || ("id" in item && isWindowOpen(item.id))) ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black" : ""
                       )}
                     >
                       <item.icon
@@ -65,7 +78,7 @@ export default function Dock() {
                             : isNeighbor 
                             ? "w-7 h-7 text-neutral-700 dark:text-neutral-200" 
                             : "w-6 h-6 text-neutral-600 dark:text-neutral-300",
-                          item.label === "Settings" && isControlBarOpen && "text-emerald-500"
+                        ((item.label === "Settings" && isControlBarOpen) || ("id" in item && isWindowOpen(item.id))) ? "text-emerald-500" : ""
                         )}
                       />
                     </div>
