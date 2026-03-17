@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useWindows, WindowID } from "./WindowContext";
+import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 
 type DockItem =
   | { icon: React.ElementType; label: string; href: string }
@@ -43,12 +44,17 @@ const dockItems: DockItem[] = [
 export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { toggleWindow, isWindowOpen } = useWindows();
+  const { containerBg, borderColor } = useChatTheme();
 
   return (
     <TooltipProvider delayDuration={0}>
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <div
-          className="flex items-end gap-3 rounded-2xl border border-white/20 bg-white/40 px-3 pb-2 pt-2 backdrop-blur-lg shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:bg-black/40 dark:border-white/10"
+          className={cn(
+            "flex items-end gap-3 rounded-2xl border px-3 pb-2 pt-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)]",
+            containerBg,
+            borderColor
+          )}
           onMouseLeave={() => setHoveredIndex(null)}
         >
           {dockItems.map((item, index) => {

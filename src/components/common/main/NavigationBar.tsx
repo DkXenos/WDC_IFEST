@@ -1,26 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaCirclePlay } from "react-icons/fa6";
 import { IoIosNotifications, IoIosNotificationsOff } from "react-icons/io";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { FiFolder, FiImage, FiFileText, FiVideo, FiSearch } from "react-icons/fi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
-
-const MOCK_FILES = [
-  { id: 1, name: "Project Proposal.pdf", type: "pdf", icon: FiFileText, date: "Today, 10:24 AM", size: "2.4 MB" },
-  { id: 2, name: "UI Architecture.fig", type: "design", icon: FiImage, date: "Yesterday, 3:15 PM", size: "15.8 MB" },
-  { id: 3, name: "Meeting Notes.docx", type: "doc", icon: FiFileText, date: "Oct 12, 2026", size: "12 KB" },
-  { id: 4, name: "Demo Recording.mp4", type: "video", icon: FiVideo, date: "Oct 10, 2026", size: "142.5 MB" },
-  { id: 5, name: "Assets", type: "folder", icon: FiFolder, date: "Oct 8, 2026", size: "--" },
-  { id: 6, name: "Client Logo.png", type: "image", icon: FiImage, date: "Oct 5, 2026", size: "4.1 MB" },
-];
 
 export default function NavigationBar() {
   const { 
     containerBg, borderColor, textColor, mutedTextColor,
-    panelBg, hoverBg, activeBg 
+    hoverBg
   } = useChatTheme();
   const leftNavLinks = [
     {
@@ -60,11 +60,37 @@ export default function NavigationBar() {
       icon: <IoIosNotifications />,
       iconClicked: <IoIosNotificationsOff />,
     },
-    {
-      title: "10.00 AM",
-      href: "",
-    },
   ];
+
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const wibClock = useMemo(() => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Jakarta",
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).formatToParts(now);
+
+    const weekday = parts.find((part) => part.type === "weekday")?.value ?? "";
+    const day = parts.find((part) => part.type === "day")?.value ?? "";
+    const month = parts.find((part) => part.type === "month")?.value ?? "";
+    const hour = parts.find((part) => part.type === "hour")?.value ?? "";
+    const minute = parts.find((part) => part.type === "minute")?.value ?? "";
+
+    return `${weekday} ${day} ${month} ${hour}.${minute}`;
+  }, [now]);
 
   const [clickedStates, setClickedStates] = useState<boolean[]>(
     rightNavLinksData.map(() => false)
@@ -76,128 +102,100 @@ export default function NavigationBar() {
     );
   };
   return (
-    <nav className="flex z-100 px-6 py-1 text-card fixed top-0 w-screen justify-between font-bold items-center gap-4">
-      <div className="flex items-center gap-4">
+    <nav className="fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5">
+      <div className={`mx-auto flex w-full max-w-400 items-center justify-between gap-2 rounded-2xl border ${borderColor} ${containerBg} px-3 py-2 shadow-xl backdrop-blur-sm sm:gap-4 sm:px-4`}>
+      <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {leftNavLinks.map((link) => {
           if (link.title === "FILE") {
             return (
-              <Dialog key={link.title}>
-                <DialogTrigger asChild>
-                  <button className="flex items-center gap-2 hover:opacity-80 transition-opacity uppercase">
+              <DropdownMenu key={link.title}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={`flex items-center gap-2 rounded-md px-2 py-1 text-[11px] font-bold tracking-wider transition-colors uppercase sm:text-xs ${textColor} ${hoverBg}`}
+                  >
                     {link.title}
                   </button>
-                </DialogTrigger>
-                <DialogContent showCloseButton={false} overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm" className={`max-w-4xl sm:max-w-[900px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
-                  <DialogTitle className="sr-only">Files Explorer</DialogTitle>
-                  
-                  {/* Window Content */}
-                  <div className="flex w-full h-[550px] overflow-hidden">
-                    {/* Sidebar */}
-                    <div className={`w-56 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto`}>
-                      {/* Mac OS Window Controls */}
-                      <div className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
-                         <DialogClose asChild>
-                           <button aria-label="Close" className="w-3 h-3 rounded-full bg-[#ff5f56] hover:bg-[#ff5f56]/80 shadow-sm border border-black/10 transition-colors" />
-                         </DialogClose>
-                         <button aria-label="Minimize" className="w-3 h-3 rounded-full bg-[#ffbd2e] hover:bg-[#ffbd2e]/80 shadow-sm border border-black/10 transition-colors" />
-                         <button aria-label="Maximize" className="w-3 h-3 rounded-full bg-[#27c93f] hover:bg-[#27c93f]/80 shadow-sm border border-black/10 transition-colors" />
-                      </div>
-
-                      <div className="px-3 pb-6 flex flex-col gap-1">
-                        <div className={`px-2 py-1 text-[11px] font-bold uppercase tracking-wider ${mutedTextColor} mt-1 mb-1`}>Favorites</div>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${activeBg} shadow-sm ${textColor}`}>
-                          <FiSearch size={14} className="text-blue-500" /> Recents
-                        </button>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <FiFolder size={14} className="text-blue-500" /> Desktop
-                        </button>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <FiFolder size={14} className="text-blue-500" /> Documents
-                        </button>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <FiFolder size={14} className="text-blue-500" /> Downloads
-                        </button>
-                        
-                        <div className={`px-2 py-1 text-[11px] font-bold uppercase tracking-wider ${mutedTextColor} mt-4 mb-1`}>Tags</div>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] shadow-sm" /> Important
-                        </button>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] shadow-sm" /> Work
-                        </button>
-                        <button className={`flex items-center gap-2 px-3 py-1.5 text-[13px] font-medium rounded-lg w-full text-left ${hoverBg} ${textColor}`}>
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f] shadow-sm" /> Personal
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Main File View */}
-                    <div className={`flex-1 flex flex-col overflow-hidden bg-transparent`}>
-                      {/* Top Bar for Main Content */}
-                      <div className={`flex items-center justify-between border-b ${borderColor} px-6 py-4 h-[60px] shrink-0`}>
-                        <div className="flex items-center gap-4">
-                          <span className={`font-semibold text-lg tracking-tight ${textColor}`}>Recents</span>
-                        </div>
-                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${borderColor} bg-black/5 dark:bg-black/20 ${mutedTextColor} shadow-sm`}>
-                          <FiSearch size={14} />
-                          <input 
-                            type="text" 
-                            placeholder="Search" 
-                            className="bg-transparent border-none outline-none text-[13px] w-44 placeholder:text-current font-medium"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1 overflow-y-auto p-6">
-                        <div className={`grid grid-cols-5 gap-4 mb-3 text-[11px] font-bold uppercase tracking-wider ${mutedTextColor} px-3`}>
-                          <div className="col-span-2">Name</div>
-                          <div>Date Modified</div>
-                          <div>Size</div>
-                          <div>Kind</div>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          {MOCK_FILES.map((file) => (
-                            <div 
-                              key={file.id} 
-                              className={`grid grid-cols-5 items-center gap-4 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${hoverBg} group`}
-                            >
-                              <div className="col-span-2 flex items-center gap-3">
-                                <file.icon size={18} className={`shrink-0 ${file.type === 'folder' ? 'text-blue-400 fill-blue-400/20' : file.type === 'pdf' ? 'text-red-400' : 'text-neutral-400'}`} />
-                                <span className={`text-[13px] font-medium truncate ${textColor}`}>{file.name}</span>
-                              </div>
-                              <div className={`text-[12px] font-medium ${mutedTextColor} truncate`}>{file.date}</div>
-                              <div className={`text-[12px] font-medium ${mutedTextColor}`}>{file.size}</div>
-                              <div className={`text-[12px] font-medium ${mutedTextColor} uppercase`}>{file.type}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  sideOffset={8}
+                  className="w-72 rounded-3xl border border-white/15 bg-neutral-900/80 p-2.5 text-neutral-200 shadow-2xl backdrop-blur-2xl"
+                >
+                  <DropdownMenuItem className="rounded-xl px-4 py-0.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    New Tab
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    New Window
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    New Incognito Window
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Reopen Closed Tab
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Open File...
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Open Location...
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="my-2 bg-white/20" />
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Close Window
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Close Tab
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Save Page As...
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500"></DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="my-2 bg-white/20" />
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                      Share
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent className="w-52 rounded-2xl border border-white/15 bg-neutral-900/90 p-1.5 text-neutral-200 shadow-xl backdrop-blur-2xl">
+                      <DropdownMenuItem className="rounded-lg px-3 py-2 text-sm font-medium focus:bg-white/10 focus:text-white">Copy Link</DropdownMenuItem>
+                      <DropdownMenuItem className="rounded-lg px-3 py-2 text-sm font-medium focus:bg-white/10 focus:text-white">Send to Friends</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                  <DropdownMenuSeparator className="my-2 bg-white/20" />
+                  <DropdownMenuItem className="rounded-xl px-4 py-2.5 text-lg font-semibold focus:bg-white/10 focus:text-white">
+                    Print...
+                    <DropdownMenuShortcut className="text-base tracking-normal text-neutral-500">⌘P</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             );
           }
 
           return (
             <Link
-              className="flex items-center gap-2 uppercase hover:opacity-80 transition-opacity"
+              className={`flex items-center gap-2 rounded-md px-1.5 py-1 text-xs font-bold tracking-wide uppercase transition-opacity hover:opacity-80 ${textColor}`}
               key={link.title}
               href={link.href}
             >
               {link.icon && (
                 <Image src={link.icon} alt={link.title} width={24} height={24} />
               )}
-              {link.title}
+              <span className="hidden sm:inline">{link.title}</span>
             </Link>
           );
         })}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="hidden lg:flex items-center gap-4">
         {middleNavLinks.map((link) => (
           <Link
-            className="flex items-center gap-2"
+            className={`flex items-center gap-2 text-xs xl:text-sm ${textColor}`}
             key={link.title}
             href={link.href}
           >
@@ -205,26 +203,22 @@ export default function NavigationBar() {
           </Link>
         ))}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         {rightNavLinksData.map((link, index) =>
           link.icon ? (
             <button
-              className="flex items-center gap-2 cursor-pointer"
+              className={`flex items-center gap-2 cursor-pointer rounded-full p-1.5 transition-colors ${hoverBg} ${textColor}`}
               key={link.title || index}
               onClick={() => toggleClicked(index)}
             >
               {clickedStates[index] ? link.iconClicked : link.icon}
             </button>
-          ) : (
-            <Link
-              className="flex items-center gap-2"
-              key={link.title || index}
-              href={link.href}
-            >
-              {link.title}
-            </Link>
-          )
+          ) : null
         )}
+        <span className={`flex items-center gap-2 text-[11px] sm:text-sm font-semibold ${textColor}`}>
+          {wibClock}
+        </span>
+      </div>
       </div>
     </nav>
   );

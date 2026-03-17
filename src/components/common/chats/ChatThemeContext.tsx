@@ -15,8 +15,8 @@ type ChatThemeContextType = {
   isVideoOn: boolean;
   setIsVideoOn: (v: boolean) => void;
 
-  containerBg: string; // Nav strip, main content bg
-  panelBg: string; // sidebar, input bar, headers
+  containerBg: string; 
+  panelBg: string;
   borderColor: string;
   textColor: string;
   mutedTextColor: string;
@@ -65,12 +65,10 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   // Control Bar State
   const [isControlBarOpen, setIsControlBarOpen] = useState(false);
 
-  // Randomize initial song on client-side mount only to prevent hydration errors
   React.useEffect(() => {
     setCurrentSongIndex(Math.floor(Math.random() * PLAYLIST.length));
   }, []);
 
-  // When blur is off, make backgrounds highly opaque to preserve text readability
   const containerBg = isDarkTheme
     ? (isBlurOn ? 'bg-black/30 backdrop-blur-xl' : 'bg-black/95')
     : (isBlurOn ? 'bg-white/40 backdrop-blur-xl' : 'bg-[#f4ebe1]');
