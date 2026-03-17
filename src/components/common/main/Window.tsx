@@ -3,7 +3,6 @@
 import React from "react";
 import { motion, AnimatePresence, useDragControls, DragControls } from "framer-motion";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
-import { FiX, FiMinus, FiMaximize2 } from "react-icons/fi";
 import { useWindows, WindowID } from "./WindowContext";
 import { cn } from "@/lib/utils";
 
@@ -59,25 +58,28 @@ export default function Window({ id, title, icon, children, width = "600px", hei
             className={`h-11 shrink-0 flex items-center justify-between px-4 border-b ${borderColor} cursor-grab active:cursor-grabbing ${panelBg}`}
             onPointerDown={(e) => controls.start(e)}
           >
-            <div className="flex items-center gap-2">
-              {icon && <span className="text-emerald-500">{icon}</span>}
-              <span className={`text-sm font-semibold tracking-wide ${textColor}`}>{title}</span>
+            <div className="flex items-center gap-2 pointer-events-auto">
+              <button
+                aria-label="Close"
+                onClick={() => closeWindow(id)}
+                className="w-3 h-3 rounded-full bg-[#ff5f56] shadow-sm border border-black/10 transition-colors hover:bg-[#ff5f56]/80"
+              />
+              <button
+                aria-label="Minimize"
+                className="w-3 h-3 rounded-full bg-[#ffbd2e] shadow-sm border border-black/10 transition-colors hover:bg-[#ffbd2e]/80"
+              />
+              <button
+                aria-label="Maximize"
+                className="w-3 h-3 rounded-full bg-[#27c93f] shadow-sm border border-black/10 transition-colors hover:bg-[#27c93f]/80"
+              />
             </div>
 
-            <div className="flex items-center gap-2 pointer-events-auto">
-              <button className={`p-1.5 rounded-lg transition-colors ${hoverBg} ${textColor}/40 hover:${textColor}`}>
-                <FiMinus size={14} />
-              </button>
-              <button className={`p-1.5 rounded-lg transition-colors ${hoverBg} ${textColor}/40 hover:${textColor}`}>
-                <FiMaximize2 size={14} />
-              </button>
-              <button 
-                onClick={() => closeWindow(id)}
-                className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all"
-              >
-                <FiX size={14} />
-              </button>
+            <div className="flex items-center gap-2 min-w-0 px-3">
+              {icon && <span className="text-emerald-500 shrink-0">{icon}</span>}
+              <span className={`text-sm font-semibold tracking-wide truncate ${textColor}`}>{title}</span>
             </div>
+
+            <div className="w-11.5" aria-hidden="true" />
           </div>
         )}
 
