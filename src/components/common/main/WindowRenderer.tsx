@@ -12,12 +12,16 @@ import CalendarWindow from "./windows/CalendarWindow";
 import FilesWindow from "./windows/FilesWindow";
 import ProfileWindow from "./windows/ProfileWindow";
 import SettingsWindow from "./windows/SettingsWindow";
+import { cn } from "@/lib/utils";
 
 export default function WindowRenderer() {
-  const { openWindows } = useWindows();
+  const { openWindows, isZenMode } = useWindows();
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    <div className={cn(
+      "fixed inset-0 pointer-events-none z-50 overflow-hidden transition-all duration-500",
+      isZenMode ? "opacity-0 backdrop-blur-0" : "opacity-100"
+    )}>
       {/* 
         The parent has pointer-events-none so it doesn't block the desktop.
         Each Window component inside will have pointer-events-auto to be interactive.

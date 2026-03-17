@@ -225,7 +225,7 @@ export default function Window({
           ...motionStyle,
         }}
         className={cn(
-          "fixed top-20 left-1/4 flex flex-col rounded-2xl border shadow-2xl overflow-hidden backdrop-blur-2xl transition-shadow duration-300",
+          "fixed inset-0 m-auto flex flex-col rounded-2xl border shadow-2xl overflow-hidden backdrop-blur-2xl transition-shadow duration-300",
           containerBg,
           borderColor,
           isFocused ? "shadow-emerald-500/10" : ""

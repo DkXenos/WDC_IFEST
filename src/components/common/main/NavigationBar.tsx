@@ -17,8 +17,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { useWindows } from "./WindowContext";
+import { cn } from "@/lib/utils";
 
 export default function NavigationBar() {
+  const { isZenMode } = useWindows();
   const { 
     containerBg, borderColor, textColor, mutedTextColor,
     hoverBg, isMusicOn, currentSongIndex, PLAYLIST

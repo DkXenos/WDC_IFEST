@@ -4,48 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 import Window from "../Window";
 import { FiClock, FiPlay, FiPause, FiRefreshCw, FiMusic, FiSkipForward } from "react-icons/fi";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
-
-type TimerMode = "Focus" | "Short Break" | "Long Break";
-
-const MODE_TIMES = {
-  "Focus": 25 * 60,
-  "Short Break": 5 * 60,
-  "Long Break": 15 * 60
-};
+import { useTimer, MODE_TIMES, TimerMode } from "../TimerContext";
 
 export default function StudyModeWindow() {
   const { textColor, mutedTextColor, borderColor, hoverBg, panelBg } = useChatTheme();
-  const [mode, setMode] = useState<TimerMode>("Focus");
-  const [timeLeft, setTimeLeft] = useState(MODE_TIMES["Focus"]);
-  const [isActive, setIsActive] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (isActive && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setIsActive(false);
-      // Play a notification sound here if needed
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [isActive, timeLeft]);
-
-  const toggleTimer = () => setIsActive(!isActive);
-  
-  const resetTimer = () => {
-    setIsActive(false);
-    setTimeLeft(MODE_TIMES[mode]);
-  };
-
-  const changeMode = (newMode: TimerMode) => {
-    setMode(newMode);
-    setIsActive(false);
-    setTimeLeft(MODE_TIMES[newMode]);
-  };
+  const { mode, timeLeft, isActive, toggleTimer, resetTimer, changeMode } = useTimer();
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

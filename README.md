@@ -1,6 +1,6 @@
 # WeLearn: Tempat Belajar Jadi Lebih Seru & Produktif! 🚀
 
-Halo! Kenalin ini **WeLearn**, aplikasi belajar yang didesain biar kamu nggak bosen pas ngerjain tugas. Konsepnya unik banget, kami bawa pengalaman pake sistem operasi (OS) langsung ke browser kamu. Ada efek *glassmorphism* yang kece dan navigasi ala desktop yang premium abis.
+Halo! Kenalin ini **WeLearn**, aplikasi belajar yang didesain biar kamu nggak bosen pas ngerjain tugas. Kami bawa pengalaman pake sistem operasi (OS) langsung ke browser kamu. Ada efek *glassmorphism* yang kece dan navigasi ala desktop yang premium.
 
 ## 🏁 Gimana Cara Mulainya?
 

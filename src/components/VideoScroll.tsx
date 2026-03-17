@@ -1,5 +1,4 @@
 "use client";
-//build ready
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
@@ -14,7 +13,7 @@ interface VideoScrollProps {
 }
 
 export default function VideoScroll({ 
-  videoSrc = "/video/MonitorOpening.mp4" 
+  videoSrc = "/video/WeLearnIntro.mp4" 
 }: VideoScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);

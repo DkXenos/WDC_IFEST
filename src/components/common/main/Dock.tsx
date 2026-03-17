@@ -14,6 +14,7 @@ import {
   FiClock,
   FiTarget,
   FiUsers,
+  FiMinimize2,
 } from "react-icons/fi";
 import {
   Tooltip,
@@ -43,12 +44,15 @@ const dockItems: DockItem[] = [
 
 export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { toggleWindow, isWindowOpen } = useWindows();
+  const { toggleWindow, isWindowOpen, isZenMode, setIsZenMode } = useWindows();
   const { containerBg, borderColor } = useChatTheme();
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className={cn(
+        "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500",
+        isZenMode ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100"
+      )}>
         <div
           data-tutorial-id="dock"
           className={cn(
@@ -113,6 +117,35 @@ export default function Dock() {
               </Tooltip>
             );
           })}
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsZenMode(true)}
+                className="group relative flex flex-col items-center justify-end"
+                onMouseEnter={() => setHoveredIndex(dockItems.length)}
+              >
+                <div
+                  className={cn(
+                    "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",
+                    hoveredIndex === dockItems.length
+                      ? "w-16 h-16 -translate-y-2"
+                      : "w-12 h-12"
+                  )}
+                >
+                  <FiMinimize2
+                    className={cn(
+                      "transition-all duration-200",
+                      hoveredIndex === dockItems.length ? "w-8 h-8 text-black dark:text-white" : "w-6 h-6 text-neutral-600 dark:text-neutral-300"
+                    )}
+                  />
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={12} className="font-medium px-3 py-1.5 text-xs rounded-md">
+              Zen Mode
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </TooltipProvider>
