@@ -34,16 +34,32 @@ export default function Window({ id, title, icon, children, width = "600px", hei
 
   const isFocused = focusedWindow === id;
 
+  const shouldSkipSurfaceDrag = (target: EventTarget | null) => {
+    if (!(target instanceof HTMLElement)) return true;
+
+    return Boolean(
+      target.closest(
+        "button, a, input, textarea, select, summary, [role='button'], [data-no-drag='true'], [contenteditable='true']"
+      )
+    );
+  };
+
   return (
     <WindowDragContext.Provider value={controls}>
       <motion.div
         drag
         dragControls={controls}
-        dragListener={!hideTitleBar}
+        dragListener={false}
         dragMomentum={false}
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        onPointerDownCapture={(e) => {
+          if (!hideTitleBar) return;
+          if (e.button !== 0) return;
+          if (shouldSkipSurfaceDrag(e.target)) return;
+          controls.start(e);
+        }}
         onPointerDown={() => setFocusedWindow(id)}
         style={{ 
           zIndex: isFocused ? 100 : 50,
