@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useWindows, WindowID } from "./WindowContext";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { motion } from "framer-motion";
 
 type DockItem =
   | { icon: React.ElementType; label: string; href: string }
@@ -46,105 +47,136 @@ export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { toggleWindow, isWindowOpen, isZenMode, setIsZenMode } = useWindows();
   const { containerBg, borderColor } = useChatTheme();
+  
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
+
+  React.useEffect(() => {
+    if (scrollContainerRef.current) {
+      const updateConstraints = () => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+        const totalWidth = container.scrollWidth;
+        const visibleWidth = container.offsetWidth;
+        setDragConstraints({
+          left: -(totalWidth - visibleWidth) - 20,
+          right: 20
+        });
+      };
+      
+      updateConstraints();
+      window.addEventListener('resize', updateConstraints);
+      return () => window.removeEventListener('resize', updateConstraints);
+    }
+  }, []);
 
   return (
     <TooltipProvider delayDuration={0}>
       <div className={cn(
-        "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500",
+        "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full max-w-[95vw] sm:w-auto px-4 sm:px-0",
         isZenMode ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100"
       )}>
         <div
           data-tutorial-id="dock"
           className={cn(
-            "flex items-end gap-3 rounded-2xl border px-3 pb-2 pt-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)]",
+            "flex items-end gap-3 rounded-2xl border px-3 pb-2 pt-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] overflow-x-hidden relative",
             containerBg,
             borderColor
           )}
           onMouseLeave={() => setHoveredIndex(null)}
+          ref={scrollContainerRef}
         >
-          {dockItems.map((item, index) => {
-            const isHovered = hoveredIndex === index;
-            const isNeighbor =
-              hoveredIndex !== null && Math.abs(hoveredIndex - index) === 1;
+          <motion.div 
+            className="flex items-end gap-3"
+            drag="x"
+            dragConstraints={dragConstraints}
+            dragElastic={0.1}
+            dragTransition={{ power: 0.2, timeConstant: 200 }}
+          >
+            {dockItems.map((item, index) => {
+              const isHovered = hoveredIndex === index;
+              const isNeighbor =
+                hoveredIndex !== null && Math.abs(hoveredIndex - index) === 1;
 
-            return (
-              <Tooltip key={item.label}>
-                <TooltipTrigger asChild>
-                  <Link
-                    href={"href" in item ? item.href : "#"}
-                    className="group relative flex flex-col items-center justify-end"
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onClick={(e) => {
-                      if ("id" in item) {
-                        e.preventDefault();
-                        toggleWindow(item.id);
-                      }
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",
-                        isHovered
-                          ? "w-16 h-16 -translate-y-2"
-                          : isNeighbor
-                            ? "w-14 h-14 -translate-y-1"
-                            : "w-12 h-12",
-                        "id" in item && isWindowOpen(item.id) ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black" : ""
-                      )}
+              return (
+                <Tooltip key={item.label}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={"href" in item ? item.href : "#"}
+                      className="group relative flex flex-col items-center justify-end shrink-0"
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onClick={(e) => {
+                        if ("id" in item) {
+                          e.preventDefault();
+                          toggleWindow(item.id);
+                        }
+                      }}
                     >
-                      <item.icon
+                      <div
                         className={cn(
-                          "transition-all duration-200",
+                          "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",
                           isHovered
-                            ? "w-8 h-8 text-black dark:text-white"
+                            ? "w-16 h-16 -translate-y-2"
                             : isNeighbor
-                              ? "w-7 h-7 text-neutral-700 dark:text-neutral-200"
-                              : "w-6 h-6 text-neutral-600 dark:text-neutral-300",
-                          "id" in item && isWindowOpen(item.id) ? "text-emerald-500" : ""
+                              ? "w-14 h-14 -translate-y-1"
+                              : "w-12 h-12",
+                          "id" in item && isWindowOpen(item.id) ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black" : ""
                         )}
-                      />
-                    </div>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="top"
-                  sideOffset={12}
-                  className="font-medium px-3 py-1.5 text-xs rounded-md"
-                >
-                  {item.label}
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
+                      >
+                        <item.icon
+                          className={cn(
+                            "transition-all duration-200",
+                            isHovered
+                              ? "w-8 h-8 text-black dark:text-white"
+                              : isNeighbor
+                                ? "w-7 h-7 text-neutral-700 dark:text-neutral-200"
+                                : "w-6 h-6 text-neutral-600 dark:text-neutral-300",
+                            "id" in item && isWindowOpen(item.id) ? "text-emerald-500" : ""
+                          )}
+                        />
+                      </div>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    sideOffset={12}
+                    className="font-medium px-3 py-1.5 text-xs rounded-md"
+                  >
+                    {item.label}
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setIsZenMode(true)}
-                className="group relative flex flex-col items-center justify-end"
-                onMouseEnter={() => setHoveredIndex(dockItems.length)}
-              >
-                <div
-                  className={cn(
-                    "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",
-                    hoveredIndex === dockItems.length
-                      ? "w-16 h-16 -translate-y-2"
-                      : "w-12 h-12"
-                  )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setIsZenMode(true)}
+                  className="group relative flex flex-col items-center justify-end shrink-0"
+                  onMouseEnter={() => setHoveredIndex(dockItems.length)}
                 >
-                  <FiMinimize2
+                  <div
                     className={cn(
-                      "transition-all duration-200",
-                      hoveredIndex === dockItems.length ? "w-8 h-8 text-black dark:text-white" : "w-6 h-6 text-neutral-600 dark:text-neutral-300"
+                      "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",
+                      hoveredIndex === dockItems.length
+                        ? "w-16 h-16 -translate-y-2"
+                        : "w-12 h-12"
                     )}
-                  />
-                </div>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" sideOffset={12} className="font-medium px-3 py-1.5 text-xs rounded-md">
-              Zen Mode
-            </TooltipContent>
-          </Tooltip>
+                  >
+                    <FiMinimize2
+                      className={cn(
+                        "transition-all duration-200",
+                        hoveredIndex === dockItems.length ? "w-8 h-8 text-black dark:text-white" : "w-6 h-6 text-neutral-600 dark:text-neutral-300"
+                      )}
+                    />
+                  </div>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={12} className="font-medium px-3 py-1.5 text-xs rounded-md">
+                Zen Mode
+              </TooltipContent>
+            </Tooltip>
+          </motion.div>
         </div>
       </div>
     </TooltipProvider>
