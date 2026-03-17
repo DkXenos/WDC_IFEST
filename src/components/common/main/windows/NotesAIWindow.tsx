@@ -6,7 +6,7 @@ import { FiCpu, FiFileText, FiZap, FiBookOpen } from "react-icons/fi";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 
 export default function NotesAIWindow() {
-  const { textColor, mutedTextColor, borderColor, hoverBg, panelBg, emeraldBg, emeraldText } = useChatTheme();
+  const { isDarkTheme, textColor, mutedTextColor, borderColor, hoverBg, panelBg, emeraldBg, emeraldText } = useChatTheme();
   const [note, setNote] = useState("");
   const [aiInsight, setAiInsight] = useState("Write something to get AI insights...");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -61,7 +61,7 @@ export default function NotesAIWindow() {
           </div>
           
           <div className="flex-1 p-5 overflow-y-auto space-y-4 custom-scrollbar">
-            <div className={`p-4 rounded-xl border ${borderColor} text-sm leading-relaxed ${isProcessing ? 'animate-pulse' : ''} ${textColor}/90`}>
+            <div className={`p-4 rounded-xl border ${borderColor} text-sm leading-relaxed ${isProcessing ? 'animate-pulse' : ''} ${isDarkTheme ? 'text-white/90' : 'text-neutral-900/90'}`}>
               {aiInsight}
             </div>
 

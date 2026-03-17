@@ -82,7 +82,7 @@ export default function NavigationBar() {
 
   const [isNotificationsOff, setIsNotificationsOff] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5">
+    <nav data-tutorial-id="navbar" className="fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5">
       <div className={`mx-auto flex w-full max-w-400 items-center justify-between gap-2 rounded-2xl border ${borderColor} ${containerBg} px-3 py-2 shadow-xl backdrop-blur-sm sm:gap-4 sm:px-4`}>
       <div className="flex items-center gap-2 sm:gap-4 min-w-0">
         {leftNavLinks.map((link) => {
@@ -91,6 +91,7 @@ export default function NavigationBar() {
               <DropdownMenu key={link.title}>
                 <DropdownMenuTrigger asChild>
                   <button
+                    data-tutorial-id="file-menu"
                     className={`flex items-center gap-2 rounded-md px-2 py-1 text-[11px] font-bold tracking-wider transition-colors uppercase sm:text-xs ${textColor} ${hoverBg}`}
                   >
                     {link.title}
@@ -187,6 +188,7 @@ export default function NavigationBar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
+              data-tutorial-id="now-playing"
               className={`flex items-center gap-2 cursor-pointer rounded-full p-1.5 transition-colors ${hoverBg} ${textColor}`}
               aria-label="Now Playing"
             >

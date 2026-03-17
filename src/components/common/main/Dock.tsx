@@ -50,6 +50,7 @@ export default function Dock() {
     <TooltipProvider delayDuration={0}>
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <div
+          data-tutorial-id="dock"
           className={cn(
             "flex items-end gap-3 rounded-2xl border px-3 pb-2 pt-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)]",
             containerBg,
