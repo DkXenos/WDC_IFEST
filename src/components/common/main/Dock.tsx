@@ -14,6 +14,10 @@ import {
   FiLock,
   FiMonitor,
   FiMusic,
+  FiCpu,
+  FiClock,
+  FiTarget,
+  FiUsers,
 } from "react-icons/fi";
 import {
   Tooltip,
@@ -29,6 +33,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { useWindows, WindowID } from "./WindowContext";
 import { Calendar } from "@/components/ui/calendar";
 import { FiImage, FiFileText, FiVideo, FiSearch } from "react-icons/fi";
 import { motion, useDragControls, DragControls } from "framer-motion";
@@ -105,7 +110,11 @@ const SETTINGS_TABS = [
   { id: "privacy", label: "Privacy & Security", icon: FiLock },
 ];
 
-const dockItems = [
+type DockItem = 
+  | { icon: any; label: string; href: string }
+  | { icon: any; label: string; id: WindowID };
+
+const dockItems: DockItem[] = [
   { icon: FiHome, label: "Home", href: "/desktop" },
   { icon: FiMessageSquare, label: "Chats", href: "/chats" },
   { icon: FiCpu, label: "AI Notes", id: "notes" },
@@ -122,6 +131,7 @@ export default function Dock() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState("appearance");
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const { toggleWindow, isWindowOpen } = useWindows();
 
   const {
     isDarkTheme,
@@ -730,11 +740,14 @@ export default function Dock() {
                 ) : (
                   <TooltipTrigger asChild>
                     <Link
-                      href={item.href}
+                      href={"href" in item ? item.href : "#"}
                       className="group relative flex flex-col items-center justify-end"
                       onMouseEnter={() => setHoveredIndex(index)}
                       onClick={(e) => {
-                        // We removed the control bar trigger for Settings but other clicks could go here
+                        if ("id" in item) {
+                          e.preventDefault();
+                          toggleWindow(item.id);
+                        }
                       }}
                     >
                       {/* Icon Container with macOS dock scaling effect */}
@@ -746,6 +759,7 @@ export default function Dock() {
                             : isNeighbor
                               ? "w-14 h-14 -translate-y-1"
                               : "w-12 h-12",
+                          "id" in item && isWindowOpen(item.id) ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-black" : ""
                         )}
                       >
                         <item.icon
@@ -756,6 +770,7 @@ export default function Dock() {
                               : isNeighbor
                                 ? "w-7 h-7 text-neutral-700 dark:text-neutral-200"
                                 : "w-6 h-6 text-neutral-600 dark:text-neutral-300",
+                            "id" in item && isWindowOpen(item.id) ? "text-emerald-500" : ""
                           )}
                         />
                       </div>
