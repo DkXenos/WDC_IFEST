@@ -12,6 +12,8 @@ type ChatThemeContextType = {
   setActiveVideoId: (id: string) => void;
   unlockedVideos: string[];
   setUnlockedVideos: (ids: string[]) => void;
+  isVideoOn: boolean;
+  setIsVideoOn: (v: boolean) => void;
 
   containerBg: string; // Nav strip, main content bg
   panelBg: string; // sidebar, input bar, headers
@@ -50,6 +52,7 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   // Video Backgrounds State
   const [activeVideoId, setActiveVideoId] = useState('o4qjk8_5gmU');
   const [unlockedVideos, setUnlockedVideos] = useState<string[]>(['o4qjk8_5gmU']); // The chilling cat default is unlocked
+  const [isVideoOn, setIsVideoOn] = useState(true);
 
   // Audio BGM State
   const [isMusicOn, setIsMusicOn] = useState(false);
@@ -80,7 +83,7 @@ export const ChatThemeProvider = ({ children }: { children: React.ReactNode }) =
   return (
     <ChatThemeContext.Provider value={{
       isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn,
-      activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos,
+      activeVideoId, setActiveVideoId, unlockedVideos, setUnlockedVideos, isVideoOn, setIsVideoOn,
       containerBg, panelBg, borderColor, textColor, mutedTextColor, hoverBg, activeBg, emeraldBg, emeraldText,
       isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST
     }}>

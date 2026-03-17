@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 const dockItems = [
   { icon: FiHome, label: "Home", href: "/" },
-  { icon: FiMessageSquare, label: "Messages", href: "/messages" },
+  { icon: FiMessageSquare, label: "Chats", href: "/chats" },
   { icon: FiCalendar, label: "Calendar", href: "/calendar" },
   { icon: FiFolder, label: "Files", href: "/files" },
   { icon: FiUser, label: "Profile", href: "/profile" },

@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { chats, currentUser } from "@/data/chats";
 import ChatSidebar from "@/components/common/chats/ChatSidebar";
 import ChatConversation from "@/components/common/chats/ChatConversation";
-import { ChatThemeProvider, useChatTheme } from "@/components/common/chats/ChatThemeContext";
+import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 
 const navItems = [
   {
@@ -49,38 +49,8 @@ const navItems = [
 ];
 
 export default function ChatsPage() {
-  return (
-    <ChatThemeProvider>
-      <ChatsPageContent />
-    </ChatThemeProvider>
-  );
-}
-
-function ChatsPageContent() {
-  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, activeVideoId, isMusicOn, setIsMusicOn, currentSongIndex, setCurrentSongIndex, PLAYLIST } = useChatTheme();
-  const [isVideoOn, setIsVideoOn] = useState(true);
+  const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, containerBg, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn } = useChatTheme();
   const [isMinimized, setIsMinimized] = useState(false);
-  const audioRef = React.useRef<HTMLAudioElement>(null);
-
-  // Handle Audio Playback
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isMusicOn) {
-        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isMusicOn, currentSongIndex]);
-
-  // Handle Audio End (Auto-play random next song)
-  const handleSongEnd = () => {
-    let nextIndex;
-    do {
-      nextIndex = Math.floor(Math.random() * PLAYLIST.length);
-    } while (nextIndex === currentSongIndex && PLAYLIST.length > 1);
-    setCurrentSongIndex(nextIndex);
-  };
   
   // Navigation State
   const [activeNav, setActiveNav] = useState("Chats");
@@ -89,95 +59,13 @@ function ChatsPageContent() {
   const [activeChatId, setActiveChatId] = useState("person-wealth");
   const activeChat = useMemo(() => chats.find(c => c.id === activeChatId) || chats[0], [activeChatId]);
 
-  // Implement YouTube Iframe API to manually seek and prevent black frames.
-  useEffect(() => {
-    if (!isVideoOn) return;
-
-    let player: any;
-    let intervalId: NodeJS.Timeout;
-
-    const initPlayer = () => {
-      if (!(window as any).YT) return;
-      
-      player = new (window as any).YT.Player("yt-player", {
-        videoId: activeVideoId,
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-          vq: "hd1080",
-          playsinline: 1,
-          loop: 1,
-          playlist: activeVideoId, // Fallback for background tabs
-        },
-        events: {
-          onReady: (event: any) => {
-            event.target.playVideo();
-            intervalId = setInterval(() => {
-              if (player && player.getCurrentTime && player.getDuration) {
-                const time = player.getCurrentTime();
-                const duration = player.getDuration();
-                // Manually trigger loop right before the end to bypass the black frame.
-                if (activeVideoId === "o4qjk8_5gmU") {
-                  if (time >= 6.8) player.seekTo(0);
-                } else if (duration > 0) {
-                  if (time >= duration - 0.2) player.seekTo(0);
-                }
-              }
-            }, 50);
-          },
-        },
-      });
-    };
-
-    if (!(window as any).YT) {
-      const script = document.createElement("script");
-      script.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(script);
-      (window as any).onYouTubeIframeAPIReady = initPlayer;
-    } else {
-      initPlayer();
-    }
-
-    return () => {
-      clearInterval(intervalId);
-      if (player && typeof player.destroy === "function") {
-        player.destroy();
-      }
-    };
-  }, [isVideoOn, activeVideoId]);
-
   return (
-    <main className={`fixed inset-0 flex z-0 overflow-hidden pt-4 pb-28 lg:pb-32 ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
-
-      {/* Video Background Layer */}
-      {isVideoOn && (
-        <div className="absolute inset-0 z-[-2] pointer-events-none overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[56.25vw] min-w-[177.77vh] min-h-[100vh] scale-[1.35] pointer-events-none">
-            <div id="yt-player" className="w-full h-full pointer-events-none" />
-          </div>
-        </div>
-      )}
-      
-      {/* Background Audio Player */}
-      <audio 
-        ref={audioRef}
-        src={PLAYLIST[currentSongIndex]?.src}
-        onEnded={handleSongEnd}
-        preload="auto"
-      />
-      
-      {/* Dark overlay for contrast */}
-      {isVideoOn && (
-        <div className={`absolute inset-0 z-[-1] pointer-events-none transition-colors duration-500 ${isDarkTheme ? 'bg-black/40' : 'bg-white/20'}`} />
-      )}
+    <main className="fixed inset-0 flex z-10 overflow-hidden pt-4 pb-28 lg:pb-32 pointer-events-none">
 
       {/* Relax Widget (Active when Minimized) */}
       <RelaxWidget isVisible={isMinimized} onRestore={() => setIsMinimized(false)} />
 
-      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-1 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'}`}>
+      <div className={`flex flex-col w-full h-full max-w-[1400px] mx-auto p-4 lg:p-6 pb-1 gap-4 relative z-10 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMinimized ? 'opacity-0 scale-95 pointer-events-none translate-y-8' : 'opacity-100 scale-100 translate-y-0'} pointer-events-auto`}>
         
         {/* Top Floating Dock Navbar */}
         <header className={`flex w-fit mx-auto ${containerBg} border ${borderColor} rounded-[1.75rem] shadow-lg p-2 items-center justify-center gap-2 shrink-0 relative z-50 transition-all duration-300`}>
