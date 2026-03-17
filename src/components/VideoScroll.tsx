@@ -88,7 +88,7 @@ export default function VideoScroll({
   useEffect(() => {
     if (isDone) {
       const timer = setTimeout(() => {
-        router.push("/desktop");
+        router.push("/sign-in");
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -99,7 +99,7 @@ export default function VideoScroll({
   return (
     <div
       ref={containerRef}
-      className="relative bg-black"
+      className="relative bg-background"
       style={{ height: "500vh" }}
     >
       <div className="fixed inset-0 z-10 overflow-hidden">
@@ -123,7 +123,7 @@ export default function VideoScroll({
 
               {/* Black overlay for smooth exit */}
               <div 
-                className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-150 ease-out"
+                className="absolute inset-0 bg-background pointer-events-none transition-opacity duration-150 ease-out"
                 style={{ opacity: fadeOpacity }}
               />
             </motion.div>
