@@ -31,7 +31,7 @@ export default function SignInPageContent() {
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Successfully signed in!");
-      router.push("/chats");
+      router.push("/desktop");
     }, 1500);
   };
 
@@ -40,7 +40,7 @@ export default function SignInPageContent() {
     setTimeout(() => {
       setIsLoading(false);
       toast.success(`Successfully signed in with ${provider}!`);
-      router.push("/chats");
+      router.push("/desktop");
     }, 1500);
   };
 

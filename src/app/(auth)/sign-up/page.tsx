@@ -31,7 +31,7 @@ export default function SignUpPageContent() {
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Account created successfully!");
-      router.push("/chats");
+      router.push("/desktop");
     }, 1500);
   };
 
@@ -40,7 +40,7 @@ export default function SignUpPageContent() {
     setTimeout(() => {
       setIsLoading(false);
       toast.success(`Account created successfully with ${provider}!`);
-      router.push("/chats");
+      router.push("/desktop");
     }, 1500);
   };
 

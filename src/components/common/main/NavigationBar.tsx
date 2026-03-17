@@ -68,7 +68,7 @@ export default function NavigationBar() {
     );
   };
   return (
-    <nav className="flex px-6 py-1 fixed top-0 w-screen justify-between font-bold items-center gap-4">
+    <nav className="flex z-100 px-6 py-1 text-card fixed top-0 w-screen justify-between font-bold items-center gap-4">
       <div className="flex items-center gap-4">
         {leftNavLinks.map((link) => (
           <Link
