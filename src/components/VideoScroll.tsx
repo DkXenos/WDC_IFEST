@@ -1,5 +1,5 @@
 "use client";
-
+//build ready
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
