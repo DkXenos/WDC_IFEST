@@ -19,7 +19,7 @@ const MOCK_FILES = [
 
 export default function NavigationBar() {
   const { 
-    borderColor, textColor, mutedTextColor,
+    containerBg, borderColor, textColor, mutedTextColor,
     panelBg, hoverBg, activeBg 
   } = useChatTheme();
   const leftNavLinks = [
@@ -95,13 +95,13 @@ export default function NavigationBar() {
                     {link.title}
                   </button>
                 </DialogTrigger>
-                <DialogContent showCloseButton={false} className={`max-w-4xl sm:max-w-[900px] p-0 overflow-hidden border ${borderColor} ${panelBg} rounded-2xl shadow-2xl`}>
+                <DialogContent showCloseButton={false} overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm" className={`max-w-4xl sm:max-w-[900px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
                   <DialogTitle className="sr-only">Files Explorer</DialogTitle>
                   
                   {/* Window Content */}
                   <div className="flex w-full h-[550px] overflow-hidden">
                     {/* Sidebar */}
-                    <div className={`w-56 shrink-0 border-r ${borderColor} bg-white/20 dark:bg-black/20 flex flex-col overflow-y-auto`}>
+                    <div className={`w-56 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto`}>
                       {/* Mac OS Window Controls */}
                       <div className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
                          <DialogClose asChild>
@@ -140,13 +140,13 @@ export default function NavigationBar() {
                     </div>
 
                     {/* Main File View */}
-                    <div className={`flex-1 flex flex-col overflow-hidden bg-white/40 dark:bg-black/40`}>
+                    <div className={`flex-1 flex flex-col overflow-hidden bg-transparent`}>
                       {/* Top Bar for Main Content */}
                       <div className={`flex items-center justify-between border-b ${borderColor} px-6 py-4 h-[60px] shrink-0`}>
                         <div className="flex items-center gap-4">
                           <span className={`font-semibold text-lg tracking-tight ${textColor}`}>Recents</span>
                         </div>
-                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${borderColor} bg-white/50 dark:bg-black/40 ${mutedTextColor} shadow-sm`}>
+                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${borderColor} bg-black/5 dark:bg-black/20 ${mutedTextColor} shadow-sm`}>
                           <FiSearch size={14} />
                           <input 
                             type="text" 

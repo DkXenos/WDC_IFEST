@@ -46,7 +46,7 @@ export default function Dock() {
     currentSongIndex, setCurrentSongIndex,
     PLAYLIST,
     borderColor, textColor, mutedTextColor,
-    panelBg, hoverBg, activeBg, emeraldBg, emeraldText,
+    containerBg, panelBg, hoverBg, activeBg, emeraldBg, emeraldText,
     isControlBarOpen, setIsControlBarOpen
   } = useChatTheme();
 
@@ -105,14 +105,14 @@ export default function Dock() {
                         </button>
                       </DialogTrigger>
                     </TooltipTrigger>
-                    <DialogContent showCloseButton={false} className={`max-w-3xl sm:max-w-[800px] p-0 overflow-hidden border ${borderColor} ${panelBg} rounded-2xl shadow-2xl`}>
+                    <DialogContent showCloseButton={false} overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm" className={`max-w-3xl sm:max-w-[800px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
                       <DialogTitle className="sr-only">System Preferences</DialogTitle>
                       
                       {/* Window Content */}
                       <div className="flex w-full h-[550px] overflow-hidden">
                         
                         {/* Sidebar */}
-                        <div className={`w-60 shrink-0 border-r ${borderColor} bg-white/20 dark:bg-black/20 flex flex-col overflow-y-auto`}>
+                        <div className={`w-60 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto`}>
                           {/* Mac OS Window Controls */}
                           <div className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
                              <DialogClose asChild>
@@ -151,7 +151,7 @@ export default function Dock() {
                         </div>
 
                         {/* Main View Data */}
-                        <div className={`flex-1 p-10 overflow-y-auto bg-white/40 dark:bg-black/40`}>
+                        <div className={`flex-1 p-10 overflow-y-auto bg-transparent`}>
                           {activeSettingsTab === 'appearance' && (
                             <div>
                               <h2 className={`text-2xl font-bold mb-6 ${textColor}`}>Appearance Settings</h2>
@@ -253,9 +253,9 @@ export default function Dock() {
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-colors ${isActive ? 'bg-emerald-500 text-white' : 'bg-black/10 text-white/60'}`}>
                                           {isActive && isMusicOn ? (
                                             <div className="flex items-end gap-1 h-4">
-                                              <div className="w-1 bg-white animate-[bounce_1s_infinite] h-full" />
-                                              <div className="w-1 bg-white animate-[bounce_1s_infinite_0.2s] h-2/3" />
-                                              <div className="w-1 bg-white animate-[bounce_1s_infinite_0.4s] h-full" />
+                                              <div className="w-1 bg-white animate-bounce h-full" />
+                                              <div className="w-1 bg-white animate-bounce h-2/3" />
+                                              <div className="w-1 bg-white animate-bounce h-full" />
                                             </div>
                                           ) : (
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
