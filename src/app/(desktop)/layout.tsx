@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./../globals.css";
 import NavigationBar from "@/components/common/main/NavigationBar";
 import Dock from "@/components/common/main/Dock";
