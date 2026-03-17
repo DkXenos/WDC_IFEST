@@ -14,7 +14,7 @@ interface VideoScrollProps {
 }
 
 export default function VideoScroll({ 
-  videoSrc = "/video/CozyRoom.mp4" 
+  videoSrc = "/video/MonitorOpening.mp4" 
 }: VideoScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
