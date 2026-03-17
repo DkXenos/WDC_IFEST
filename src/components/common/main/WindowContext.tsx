@@ -13,6 +13,8 @@ type WindowContextType = {
   setFocusedWindow: (id: WindowID | null) => void;
   isZenMode: boolean;
   setIsZenMode: (val: boolean) => void;
+  showTutorialButton: boolean;
+  setShowTutorialButton: (val: boolean) => void;
 };
 
 const WindowContext = createContext<WindowContextType | null>(null);
@@ -21,6 +23,7 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
   const [openWindows, setOpenWindows] = useState<Set<WindowID>>(new Set());
   const [focusedWindow, setFocusedWindow] = useState<WindowID | null>(null);
   const [isZenMode, setIsZenMode] = useState(false);
+  const [showTutorialButton, setShowTutorialButton] = useState(true);
 
   const toggleWindow = useCallback((id: WindowID) => {
     setOpenWindows((prev) => {
@@ -56,7 +59,9 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       focusedWindow,
       setFocusedWindow,
       isZenMode,
-      setIsZenMode
+      setIsZenMode,
+      showTutorialButton,
+      setShowTutorialButton
     }}>
       {children}
     </WindowContext.Provider>

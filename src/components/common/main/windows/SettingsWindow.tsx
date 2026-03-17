@@ -24,7 +24,7 @@ const SETTINGS_TABS = [
 
 export default function SettingsWindow() {
   const [activeSettingsTab, setActiveSettingsTab] = useState("appearance");
-  const { closeWindow } = useWindows();
+  const { closeWindow, showTutorialButton, setShowTutorialButton } = useWindows();
 
   const {
     isDarkTheme,
@@ -159,6 +159,20 @@ export default function SettingsWindow() {
                             className={`w-10 h-6 ${isBlurOn ? "bg-emerald-500" : "bg-black/20 dark:bg-white/20"} rounded-full relative cursor-pointer transition-colors duration-300`}
                         >
                             <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-transform duration-300 ${isBlurOn ? "right-0.5" : "left-0.5"}`} />
+                        </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 mt-2">
+                        <div className="flex items-center justify-between">
+                        <span className={`text-sm font-semibold ${textColor}`}>
+                            Show Tutorial Button
+                        </span>
+                        <div
+                            onClick={() => setShowTutorialButton(!showTutorialButton)}
+                            className={`w-10 h-6 ${showTutorialButton ? "bg-emerald-500" : "bg-black/20 dark:bg-white/20"} rounded-full relative cursor-pointer transition-colors duration-300`}
+                        >
+                            <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm transition-transform duration-300 ${showTutorialButton ? "right-0.5" : "left-0.5"}`} />
                         </div>
                         </div>
                     </div>

@@ -42,7 +42,10 @@ const STEPS: TutorialStep[] = [
 
 const STORAGE_KEY = "welearn_tutorial_seen";
 
+import { useWindows } from "./WindowContext";
+
 export default function InteractiveTutorial() {
+  const { showTutorialButton } = useWindows();
   const [isOpen, setIsOpen] = React.useState(false);
   const [stepIndex, setStepIndex] = React.useState(0);
   const [targetRect, setTargetRect] = React.useState<DOMRect | null>(null);
@@ -119,7 +122,7 @@ export default function InteractiveTutorial() {
 
   return (
     <>
-      {!isOpen && (
+      {!isOpen && showTutorialButton && (
         <div className="fixed right-4 bottom-24 z-120">
           <Button onClick={handleReplay} variant="secondary">
             Show Tutorial
