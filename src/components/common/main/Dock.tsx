@@ -31,6 +31,29 @@ import {
 import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 import { Calendar } from "@/components/ui/calendar";
 import { FiImage, FiFileText, FiVideo, FiSearch } from "react-icons/fi";
+import { motion, useDragControls, DragControls } from "framer-motion";
+
+const DragContext = React.createContext<DragControls | null>(null);
+
+const DraggableModal = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+  const controls = useDragControls();
+  return (
+    <DragContext.Provider value={controls}>
+      <motion.div drag dragControls={controls} dragListener={false} dragMomentum={false} className={cn("pointer-events-auto", className)}>
+        {children}
+      </motion.div>
+    </DragContext.Provider>
+  );
+};
+
+const DragHandle = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+  const controls = React.useContext(DragContext);
+  return (
+    <div className={cn("cursor-grab active:cursor-grabbing touch-none select-none", className)} onPointerDown={(e) => controls?.start(e)}>
+      {children}
+    </div>
+  );
+};
 
 const MOCK_FILES = [
   { id: 1, name: "Project Proposal.pdf", type: "pdf", icon: FiFileText, date: "Today, 10:24 AM", size: "2.4 MB" },
@@ -182,20 +205,20 @@ export default function Dock() {
                     <DialogContent
                       showCloseButton={false}
                       overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm"
-                      className={`max-w-3xl sm:max-w-[800px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}
+                      className="bg-transparent border-none shadow-none p-0 max-w-none w-fit overflow-visible"
                     >
                       <DialogTitle className="sr-only">
                         System Preferences
                       </DialogTitle>
 
                       {/* Window Content */}
-                      <div className="flex w-full h-[550px] overflow-hidden">
+                      <DraggableModal className={`flex w-[calc(100vw-2rem)] sm:w-[800px] h-[550px] overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
                         {/* Sidebar */}
                         <div
                           className={`w-60 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto`}
                         >
                           {/* Mac OS Window Controls */}
-                          <div className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
+                          <DragHandle className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
                             <DialogClose asChild>
                               <button
                                 aria-label="Close"
@@ -210,7 +233,7 @@ export default function Dock() {
                               aria-label="Maximize"
                               className="w-3 h-3 rounded-full bg-[#27c93f] hover:bg-[#27c93f]/80 shadow-sm border border-black/10 transition-colors"
                             />
-                          </div>
+                          </DragHandle>
 
                           <div className="flex items-center gap-3 mb-6 px-5 mt-2">
                             <div className="w-12 h-12 rounded-full bg-linear-to-tr from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-lg font-bold shadow-md">
@@ -283,13 +306,13 @@ export default function Dock() {
                                   >
                                     <button
                                       onClick={() => setIsDarkTheme(false)}
-                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${!isDarkTheme ? "bg-white dark:bg-neutral-800 shadow-sm" : "bg-transparent hover:bg-black/5"} ${textColor}`}
+                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${!isDarkTheme ? "bg-white dark:bg-neutral-800 shadow-sm text-neutral-900 dark:text-white" : `bg-transparent hover:bg-black/5 ${mutedTextColor}`}`}
                                     >
                                       Light
                                     </button>
                                     <button
                                       onClick={() => setIsDarkTheme(true)}
-                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${isDarkTheme ? "bg-white dark:bg-neutral-800 shadow-sm" : "bg-transparent hover:bg-black/5"} ${textColor}`}
+                                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${isDarkTheme ? "bg-white dark:bg-neutral-800 shadow-sm text-neutral-900 dark:text-white" : `bg-transparent hover:bg-black/5 ${mutedTextColor}`}`}
                                     >
                                       Dark
                                     </button>
@@ -400,7 +423,7 @@ export default function Dock() {
                               </div>
 
                               <div className={`flex flex-col gap-2`}>
-                                {PLAYLIST.map((song: any, idx: number) => {
+                                {PLAYLIST.map((song: { src: string; title: string }, idx: number) => {
                                   const isActive = currentSongIndex === idx;
 
                                   return (
@@ -480,7 +503,7 @@ export default function Dock() {
                             </div>
                           )}
                         </div>
-                      </div>
+                      </DraggableModal>
                     </DialogContent>
                   </Dialog>
                 ) : item.label === "Calendar" ? (
@@ -519,12 +542,13 @@ export default function Dock() {
                     <DialogContent
                       showCloseButton={false}
                       overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm"
-                      className={`max-w-3xl sm:max-w-[700px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}
+                      className="bg-transparent border-none shadow-none p-0 max-w-none w-fit overflow-visible"
                     >
                       <DialogTitle className="sr-only">Calendar</DialogTitle>
 
+                      <DraggableModal className={`w-[calc(100vw-2rem)] sm:w-[700px] max-w-3xl overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
                       {/* Window Controls */}
-                      <div className="flex items-center gap-2 px-4 py-3 border-b border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/20">
+                      <DragHandle className="flex items-center gap-2 px-4 py-3 border-b border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/20">
                         <DialogClose asChild>
                           <button
                             aria-label="Close"
@@ -544,7 +568,7 @@ export default function Dock() {
                         >
                           Calendar
                         </span>
-                      </div>
+                      </DragHandle>
 
                       <div className="flex bg-transparent overflow-hidden h-[400px]">
                         {/* Left Panel: Selected Date Overview mapping to ChatThemeContext styles */}
@@ -573,6 +597,7 @@ export default function Dock() {
                           />
                         </div>
                       </div>
+                      </DraggableModal>
                     </DialogContent>
                   </Dialog>
                 ) : item.label === "Files" ? (
@@ -608,21 +633,21 @@ export default function Dock() {
                         </button>
                       </DialogTrigger>
                     </TooltipTrigger>
-                    <DialogContent showCloseButton={false} overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm" className={`max-w-4xl sm:max-w-[900px] p-0 overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
+                    <DialogContent showCloseButton={false} overlayClassName="bg-black/10 dark:bg-black/40 backdrop-blur-sm" className="bg-transparent border-none shadow-none p-0 max-w-none w-fit overflow-visible">
                       <DialogTitle className="sr-only">Files Explorer</DialogTitle>
                       
                       {/* Window Content */}
-                      <div className="flex w-full h-[550px] overflow-hidden">
+                      <DraggableModal className={`flex w-[calc(100vw-2rem)] sm:w-[900px] h-[550px] overflow-hidden border ${borderColor} ${containerBg} rounded-2xl shadow-2xl`}>
                         {/* Sidebar */}
                         <div className={`w-56 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto`}>
                           {/* Mac OS Window Controls */}
-                          <div className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
+                          <DragHandle className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
                              <DialogClose asChild>
                                <button aria-label="Close" className="w-3 h-3 rounded-full bg-[#ff5f56] hover:bg-[#ff5f56]/80 shadow-sm border border-black/10 transition-colors" />
                              </DialogClose>
                              <button aria-label="Minimize" className="w-3 h-3 rounded-full bg-[#ffbd2e] hover:bg-[#ffbd2e]/80 shadow-sm border border-black/10 transition-colors" />
                              <button aria-label="Maximize" className="w-3 h-3 rounded-full bg-[#27c93f] hover:bg-[#27c93f]/80 shadow-sm border border-black/10 transition-colors" />
-                          </div>
+                          </DragHandle>
 
                           <div className="px-3 pb-6 flex flex-col gap-1">
                             <div className={`px-2 py-1 text-[11px] font-bold uppercase tracking-wider ${mutedTextColor} mt-1 mb-1`}>Favorites</div>
@@ -695,7 +720,7 @@ export default function Dock() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </DraggableModal>
                     </DialogContent>
                   </Dialog>
                 ) : (
