@@ -108,6 +108,10 @@ const SETTINGS_TABS = [
 const dockItems = [
   { icon: FiHome, label: "Home", href: "/desktop" },
   { icon: FiMessageSquare, label: "Chats", href: "/chats" },
+  { icon: FiCpu, label: "AI Notes", id: "notes" },
+  { icon: FiClock, label: "Focus", id: "timer" },
+  { icon: FiTarget, label: "Quests", id: "tasks" },
+  { icon: FiUsers, label: "Forum", id: "forum" },
   { icon: FiCalendar, label: "Calendar", href: "/calendar" },
   { icon: FiFolder, label: "Files", href: "/files" },
   { icon: FiUser, label: "Profile", href: "/profile" },
