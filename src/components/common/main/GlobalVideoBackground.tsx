@@ -45,11 +45,9 @@ export default function GlobalVideoBackground() {
 
   // Implement YouTube Iframe API.
   // Note: we do not add pathname as a dependency heavily here because we want
-  // the player to remain alive and persistent in the DOM, so that transitions 
-  // Note: we add `isLandingPage` closely here so that if the user starts on `/`
-  // and manually routes to `/chats`, this hook natively fires and creates the player properly!
+  // the player to remain alive and persistent in the DOM from the moment the app mounts!
   useEffect(() => {
-    if (!isVideoOn || isLandingPage) return;
+    if (!isVideoOn) return;
 
     let player: any;
     let intervalId: NodeJS.Timeout;
@@ -105,12 +103,10 @@ export default function GlobalVideoBackground() {
         player.destroy();
       }
     };
-  }, [isVideoOn, activeVideoId, isLandingPage]);
-
-  if (isLandingPage) return null;
+  }, [isVideoOn, activeVideoId]);
 
   return (
-    <div className={`fixed inset-0 z-0 overflow-hidden ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''} transition-colors duration-500`}>
+    <div className={`fixed inset-0 overflow-hidden transition-all duration-500 pointer-events-none ${isLandingPage ? 'opacity-0 -z-50 scale-105' : 'opacity-100 z-0 scale-100'} ${isVideoOn ? 'bg-black' : (isDarkTheme ? 'bg-neutral-800' : 'bg-[#E0C9B6]')} ${!isBlurOn ? 'disable-chat-blur' : ''}`}>
       {/* Video Background Layer */}
       {isVideoOn && (
         <div className="absolute inset-0 z-[-2] pointer-events-none overflow-hidden">
