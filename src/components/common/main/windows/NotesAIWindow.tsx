@@ -16,7 +16,6 @@ export default function NotesAIWindow() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [fileName, setFileName] = useState("notes.md");
 
-  // Load file content when activeFileId changes
   React.useEffect(() => {
     if (openedFileContent !== null) {
       setNote(openedFileContent);
@@ -36,7 +35,6 @@ export default function NotesAIWindow() {
 
   const handleAIAction = (action: string) => {
     setIsProcessing(true);
-    // Simulate AI processing
     setTimeout(() => {
       switch (action) {
         case "summarize":
@@ -62,7 +60,6 @@ export default function NotesAIWindow() {
       height="550px"
     >
       <div className="flex h-full divide-x divide-white/10 overflow-hidden">
-        {/* Editor Pane */}
         <div className="flex-1 flex flex-col min-w-0">
           <div className={`h-10 px-4 flex items-center justify-between border-b ${borderColor} ${panelBg}`}>
             <div className="flex items-center gap-2">
@@ -99,7 +96,6 @@ export default function NotesAIWindow() {
           />
         </div>
 
-        {/* AI Insight Pane */}
         <div className={`w-72 flex flex-col shrink-0 ${panelBg}`}>
           <div className={`h-10 px-4 flex items-center gap-2 border-b ${borderColor}`}>
             <FiZap size={14} className="text-amber-400" />

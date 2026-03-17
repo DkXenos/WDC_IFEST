@@ -22,7 +22,6 @@ export default function CalendarWindow() {
       hideTitleBar={true}
     >
         <div className="flex bg-transparent overflow-hidden h-[450px] pointer-events-none">
-            {/* Left Panel */}
             <WindowDragHandle className={`w-60 shrink-0 border-r ${borderColor} ${panelBg} flex flex-col items-center justify-center p-6 text-center shadow-2xl rounded-l-2xl relative pointer-events-auto`}>
                 {/* Window controls */}
                 <div className="absolute top-4 left-4 flex gap-1.5 pointer-events-auto">
@@ -44,7 +43,6 @@ export default function CalendarWindow() {
                 </div>
             </WindowDragHandle>
 
-            {/* Right Panel */}
             <div className={`flex-1 flex items-center justify-center relative p-6 bg-black/5 dark:bg-white/5 backdrop-blur-sm h-full pointer-events-auto`}>
                 <Calendar
                     mode="single"

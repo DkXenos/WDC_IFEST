@@ -55,7 +55,6 @@ export default function TaskManagerWindow() {
       height="600px"
     >
       <div className="flex flex-col h-full">
-        {/* User Progress Header */}
         <div className={`p-6 border-b ${borderColor} ${panelBg}`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -84,7 +83,6 @@ export default function TaskManagerWindow() {
           </div>
         </div>
 
-        {/* Task List */}
         <div className="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
           <h4 className={`text-[11px] font-bold uppercase tracking-widest ${mutedTextColor} mb-4`}>Active Objectives</h4>
           <AnimatePresence>
@@ -118,7 +116,6 @@ export default function TaskManagerWindow() {
           </AnimatePresence>
         </div>
 
-        {/* Add Task Input */}
         <form onSubmit={handleAddTask} className={`p-6 border-t ${borderColor} ${panelBg}`}>
           <div className="relative">
             <input

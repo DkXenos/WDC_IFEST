@@ -81,7 +81,6 @@ export default function Dock() {
                       }
                     }}
                   >
-                    {/* Icon Container with macOS dock scaling effect */}
                     <div
                       className={cn(
                         "flex items-center justify-center rounded-xl bg-linear-to-b from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-200 ease-out origin-bottom border border-black/5 dark:border-white/10",

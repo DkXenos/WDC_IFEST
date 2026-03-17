@@ -25,7 +25,6 @@ export default function StudyModeWindow() {
       height="400px"
     >
       <div className="flex flex-col h-full items-center justify-between p-8 bg-neutral-900/10">
-        {/* Mode Selector */}
         <div className={`inline-flex p-1 rounded-2xl ${panelBg} border ${borderColor} shadow-inner`}>
           {(Object.keys(MODE_TIMES) as TimerMode[]).map((m) => (
             <button
@@ -42,7 +41,6 @@ export default function StudyModeWindow() {
           ))}
         </div>
 
-        {/* Timer Display */}
         <div className="relative flex flex-col items-center">
           <div className="text-[72px] font-black tracking-tighter tabular-nums drop-shadow-xl select-none" style={{ color: mode === "Focus" ? '#10b981' : '#3b82f6' }}>
             {formatTime(timeLeft)}
@@ -52,7 +50,6 @@ export default function StudyModeWindow() {
           </span>
         </div>
 
-        {/* Controls */}
         <div className="flex items-center gap-6">
           <button 
             onClick={resetTimer}
@@ -73,7 +70,6 @@ export default function StudyModeWindow() {
           </button>
         </div>
 
-        {/* Ambient Settings */}
         <div className={`w-full mt-4 p-4 rounded-2xl border ${borderColor} ${panelBg} flex items-center justify-between`}>
           <div className="flex items-center gap-3">
             <FiMusic className="text-emerald-500" />

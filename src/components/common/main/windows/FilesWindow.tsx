@@ -42,7 +42,6 @@ export default function FilesWindow() {
       hideTitleBar={true}
     >
         <div className="flex w-full h-full pointer-events-none">
-            {/* Sidebar */}
             <div className={`w-56 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto h-full pointer-events-auto`}>
                 {/* Mac OS Window Controls */}
                 <WindowDragHandle className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2">
@@ -79,7 +78,6 @@ export default function FilesWindow() {
                 </div>
             </div>
 
-            {/* Main File View */}
             <div className={`flex-1 flex flex-col overflow-hidden bg-transparent h-full pointer-events-auto`}>
                 {/* Top Bar */}
                 <div className={`flex items-center justify-between border-b ${borderColor} px-6 py-4 h-[60px] shrink-0`}>

@@ -26,19 +26,18 @@ export const WindowDragHandle = ({
   );
 };
 
-// ─── Resize handle descriptors ──────────────────────────────────────────────
+
 
 type Direction = "n" | "ne" | "e" | "se" | "s" | "sw" | "w" | "nw";
 
 interface HandleDef {
   dir: Direction;
   cursor: string;
-  /** Tailwind classes that position the invisible hit area */
   className: string;
 }
 
 const HANDLES: HandleDef[] = [
-  // edges
+
   {
     dir: "n",
     cursor: "cursor-ns-resize",
@@ -59,7 +58,7 @@ const HANDLES: HandleDef[] = [
     cursor: "cursor-ew-resize",
     className: "top-2 left-0 bottom-2 w-2",
   },
-  // corners
+
   {
     dir: "ne",
     cursor: "cursor-nesw-resize",
@@ -82,7 +81,7 @@ const HANDLES: HandleDef[] = [
   },
 ];
 
-// ─── Props ───────────────────────────────────────────────────────────────────
+
 
 interface WindowProps {
   id: WindowID;
@@ -94,7 +93,7 @@ interface WindowProps {
   hideTitleBar?: boolean;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 
 const MIN_W = 360;
 const MIN_H = 280;
@@ -106,7 +105,7 @@ function parseSize(val: string, viewport: number): number {
   return parseFloat(val);
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 
 export default function Window({
   id,
@@ -121,10 +120,10 @@ export default function Window({
   const { closeWindow, focusedWindow, setFocusedWindow } = useWindows();
   const dragControls = useDragControls();
 
-  // ── size state ──────────────────────────────────────────────────────────
+
   const [size, setSize] = React.useState<{ w: number; h: number } | null>(null);
 
-  // Initialise once from prop strings
+
   const initSize = React.useCallback(() => {
     if (size) return;
     const vw = window.innerWidth;
@@ -142,7 +141,7 @@ export default function Window({
   const isFocused = focusedWindow === id;
   const resizingRef = React.useRef(false);
 
-  // ── drag-surface guard ──────────────────────────────────────────────────
+
   const shouldSkipSurfaceDrag = (target: EventTarget | null) => {
     if (!(target instanceof HTMLElement)) return true;
     return Boolean(
@@ -152,7 +151,7 @@ export default function Window({
     );
   };
 
-  // ── generic resize handler ───────────────────────────────────────────────
+
   const handleResizeStart = (
     e: React.PointerEvent<HTMLDivElement>,
     dir: Direction
@@ -197,7 +196,7 @@ export default function Window({
     window.addEventListener("pointerup", onUp);
   };
 
-  // ── computed style ───────────────────────────────────────────────────────
+
   const motionStyle: React.CSSProperties = size
     ? { width: size.w, height: size.h }
     : { width, height };
@@ -231,7 +230,7 @@ export default function Window({
           isFocused ? "shadow-emerald-500/10" : ""
         )}
       >
-        {/* ── Title Bar ────────────────────────────────────────────── */}
+
         {!hideTitleBar && (
           <div
             className={cn(
@@ -241,7 +240,7 @@ export default function Window({
             )}
             onPointerDown={(e) => dragControls.start(e)}
           >
-            {/* Traffic lights */}
+
             <div className="flex items-center gap-2 pointer-events-auto">
               <button
                 aria-label="Close"
@@ -258,7 +257,7 @@ export default function Window({
               />
             </div>
 
-            {/* Window title */}
+
             <div className="flex items-center gap-2 min-w-0 px-3">
               {icon && <span className="text-emerald-500 shrink-0">{icon}</span>}
               <span className={cn("text-sm font-semibold tracking-wide truncate", textColor)}>
@@ -270,12 +269,12 @@ export default function Window({
           </div>
         )}
 
-        {/* ── Content ──────────────────────────────────────────────── */}
+
         <div className="flex-1 overflow-hidden pointer-events-auto min-h-0">
           {children}
         </div>
 
-        {/* ── Resize handles (all 8 directions) ────────────────────── */}
+
         {HANDLES.map(({ dir, cursor, className }) => (
           <div
             key={dir}
@@ -285,7 +284,7 @@ export default function Window({
           />
         ))}
 
-        {/* ── SE corner visual indicator (subtle dots, macOS-like) ─── */}
+
         <div className="absolute bottom-1 right-1 z-40 pointer-events-none select-none opacity-30">
           <svg width="12" height="12" viewBox="0 0 12 12">
             <circle cx="10" cy="10" r="1.2" fill="currentColor" className={textColor} />

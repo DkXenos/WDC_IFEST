@@ -1,10 +1,10 @@
-// ─── Types ────────────────────────────────────────────────────────────────────
+
 
 export interface ChatUser {
   id: string;
   name: string;
   initials: string;
-  avatarUrl?: string; // Optional remote image
+  avatarUrl?: string;
   avatarColor: string;
   online?: boolean;
   lastSeen?: string;
@@ -29,7 +29,7 @@ export interface Chat {
   unread?: number;
 }
 
-// ─── Users ────────────────────────────────────────────────────────────────────
+
 
 export const currentUser: ChatUser = {
   id: "me",
@@ -136,10 +136,10 @@ export const users: Record<string, ChatUser> = {
   },
 };
 
-// ─── Chats ────────────────────────────────────────────────────────────────────
+
 
 export const chats: Chat[] = [
-  // ── Groups ────────────────────────────────────────────────────────────────
+
   {
     id: "group-internship",
     type: "group",
@@ -199,7 +199,7 @@ export const chats: Chat[] = [
     ],
   },
 
-  // ── Person ────────────────────────────────────────────────────────────────
+
   {
     id: "person-amarae",
     type: "person",
@@ -443,12 +443,10 @@ export const chats: Chat[] = [
   },
 ];
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Returns the active conversation data (Wealth chat) */
+
 export const activeChat = chats.find((c) => c.id === "person-wealth")!;
 
-/** Returns the user object for a given chat */
 export function getChatUser(chat: Chat): ChatUser {
   return chat.participants[0];
 }

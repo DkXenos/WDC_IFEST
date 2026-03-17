@@ -27,7 +27,6 @@ export default function ForumWindow() {
       height="650px"
     >
       <div className="flex h-full divide-x divide-white/5">
-        {/* Navigation Sidebar */}
         <aside className={`w-64 shrink-0 flex flex-col ${panelBg}`}>
           <div className="p-6">
             <div className={`flex items-center justify-between mb-8`}>
@@ -54,7 +53,6 @@ export default function ForumWindow() {
           </div>
         </aside>
 
-        {/* Feed Area */}
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header */}
           <header className={`h-20 px-8 flex items-center justify-between border-b ${borderColor}`}>
@@ -75,14 +73,12 @@ export default function ForumWindow() {
             </button>
           </header>
 
-          {/* Social Feed */}
           <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
             {posts.map((post) => (
               <div 
                 key={post.id}
                 className={`p-6 rounded-3xl border ${borderColor} ${hoverBg} transition-all cursor-pointer flex gap-6`}
               >
-                {/* Voting Column */}
                 <div className="flex flex-col items-center gap-2 shrink-0">
                   <button className={`p-2 rounded-lg hover:bg-emerald-500/10 transition-colors ${mutedTextColor} hover:text-emerald-500`}>
                     <FiArrowUp size={20} />
@@ -93,7 +89,6 @@ export default function ForumWindow() {
                   </button>
                 </div>
 
-                {/* Content Column */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 rounded-full bg-white/10 border border-white/5 flex items-center justify-center text-[10px] font-bold text-white uppercase">

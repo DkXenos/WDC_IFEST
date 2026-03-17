@@ -27,7 +27,6 @@ export default function SignUpPageContent() {
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading('credentials');
-    // Simulate network request
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Account created successfully!");

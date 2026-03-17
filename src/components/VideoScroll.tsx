@@ -33,7 +33,6 @@ export default function VideoScroll({
     const video = videoRef.current;
     if (!video) return;
 
-    // Initialize Lenis for smooth scrolling
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -48,7 +47,6 @@ export default function VideoScroll({
     }
     requestAnimationFrame(raf);
 
-    // ScrollTrigger to scrub the video
     const trigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
@@ -57,12 +55,10 @@ export default function VideoScroll({
       onUpdate: (self) => {
         const progress = self.progress;
 
-        // Scrub video
         if (video.readyState >= 2) {
           video.currentTime = progress * video.duration;
         }
 
-        // Handle fade and transition
         if (progress >= 0.85) {
           const fadeProgress = Math.min((progress - 0.85) / 0.10, 1);
           setFadeOpacity(fadeProgress);
@@ -83,7 +79,6 @@ export default function VideoScroll({
     };
   }, [mounted, isDone]);
 
-  // Handle redirect
   useEffect(() => {
     if (isDone) {
       const timer = setTimeout(() => {
@@ -120,7 +115,6 @@ export default function VideoScroll({
                 playsInline
               />
 
-              {/* Black overlay for smooth exit */}
               <div 
                 className="absolute inset-0 bg-background pointer-events-none transition-opacity duration-150 ease-out"
                 style={{ opacity: fadeOpacity }}
@@ -130,7 +124,6 @@ export default function VideoScroll({
         </AnimatePresence>
       </div>
 
-      {/* Scroll indicator */}
       <AnimatePresence>
         {!isDone && (
           <motion.div

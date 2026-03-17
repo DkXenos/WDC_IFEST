@@ -69,7 +69,6 @@ export default function SettingsWindow() {
       hideTitleBar={true}
     >
         <div className={`flex w-full h-full bg-transparent overflow-hidden pointer-events-none`}>
-            {/* Sidebar */}
             <div className={`w-60 shrink-0 border-r ${borderColor} bg-black/5 dark:bg-black/20 flex flex-col overflow-y-auto h-full pointer-events-auto`}>
                 <WindowDragHandle className="flex items-center gap-2 px-5 py-5 sticky top-0 z-10 w-full mb-2 bg-transparent">
                    <button onClick={() => closeWindow("settings")} className="w-3 h-3 rounded-full bg-[#ff5f56] shadow-sm border border-black/10 pointer-events-auto" />
@@ -119,7 +118,6 @@ export default function SettingsWindow() {
                 </div>
             </div>
 
-            {/* Main View Data */}
             <div className={`flex-1 p-10 overflow-y-auto bg-transparent h-full pointer-events-auto`}>
                 {activeSettingsTab === "appearance" && (
                 <div>
@@ -128,7 +126,6 @@ export default function SettingsWindow() {
                     </h2>
 
                     <div className="flex flex-col gap-6">
-                    {/* Theme Settings */}
                     <div className="flex flex-col gap-2">
                         <label className={`font-semibold ${textColor} text-sm`}>
                         Color Scheme
@@ -177,7 +174,6 @@ export default function SettingsWindow() {
                         </div>
                     </div>
 
-                    {/* Video Background Selection */}
                     <div className="flex flex-col gap-2 mt-4 pt-6 border-t border-black/10 dark:border-white/10">
                         <label className={`font-semibold ${textColor} text-sm mb-2`}>
                         Video Background Wallpaper

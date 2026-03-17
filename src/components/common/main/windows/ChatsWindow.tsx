@@ -53,10 +53,7 @@ const navItems = [
 export default function ChatsWindow() {
   const { isDarkTheme, isBlurOn, setIsDarkTheme, setIsBlurOn, panelBg, borderColor, textColor, hoverBg, mutedTextColor, isMusicOn, setIsMusicOn, isVideoOn, setIsVideoOn, isControlBarOpen } = useChatTheme();
   
-  // Navigation State
   const [activeNav, setActiveNav] = useState("Chats");
-
-  // Chat State
   const [activeChatId, setActiveChatId] = useState("person-wealth");
   const activeChat = useMemo(() => chats.find(c => c.id === activeChatId) || chats[0], [activeChatId]);
 
@@ -66,11 +63,10 @@ export default function ChatsWindow() {
       title="Messages" 
       icon={<FiMessageSquare size={16} />} 
       width="95vw" 
-      height="85vh" // Use large sizing similar to the main screen
+      height="85vh"
     >
       <div className={`flex w-full h-full overflow-hidden p-2 gap-2 relative z-10 transition-colors duration-500 bg-transparent`}>
         
-        {/* ─ Vertical Nav Strip ─ */}
         <nav className={`w-24 shrink-0 h-full flex flex-col items-center py-6 gap-5 ${panelBg} rounded-[1.5rem] border ${borderColor} shadow-inner transition-colors duration-300`}>
           
           {/* User avatar */}
@@ -89,7 +85,6 @@ export default function ChatsWindow() {
             <div className="absolute -bottom-1 -right-1 w-[18px] h-[18px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-300 to-emerald-500 rounded-full border-[3px] border-white/80" />
           </div>
 
-          {/* Icons */}
           <div className="flex flex-col gap-3 flex-1 items-center w-full">
             {navItems.map((item) => (
               <button
@@ -124,10 +119,9 @@ export default function ChatsWindow() {
           </button>
         </nav>
 
-        {/* ─ Sidebar (Groups / Person) ─ */}
         <ChatSidebar activeChatId={activeChatId} onSelectChat={setActiveChatId} />
 
-        {/* ─ Dynamic Main Area ─ */}
+        
         {activeNav === "Chats" && <ChatConversation chat={activeChat} onViewProfile={() => setActiveNav("ContactProfile")} />}
         {activeNav === "Notifications" && <NotificationsView />}
         {activeNav === "Settings" && <SettingsView />}
@@ -139,8 +133,6 @@ export default function ChatsWindow() {
     </Window>
   );
 }
-
-// Aux Views (extracted from previous full page implementation)
 
 function NotificationsView() {
   const { panelBg, borderColor, textColor, mutedTextColor, hoverBg, emeraldText } = useChatTheme();

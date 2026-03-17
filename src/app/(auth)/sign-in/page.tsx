@@ -27,7 +27,6 @@ export default function SignInPageContent() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading('credentials');
-    // Simulate network request
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Successfully signed in!");

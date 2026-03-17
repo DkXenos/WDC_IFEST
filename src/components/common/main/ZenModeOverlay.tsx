@@ -49,7 +49,6 @@ export default function ZenModeOverlay() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4"
         >
-          {/* Fully transparent clickable backdrop */}
           <div 
             className="absolute inset-0 bg-transparent" 
             onClick={() => setIsZenMode(false)}
@@ -68,7 +67,6 @@ export default function ZenModeOverlay() {
             </div>
 
             <div className="text-center relative select-none">
-              {/* Main Clock */}
               <motion.div
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -85,7 +83,6 @@ export default function ZenModeOverlay() {
                 </p>
               </motion.div>
 
-              {/* Study Timer (Only if active or was active) */}
               <AnimatePresence>
                 {(isActive || timeLeft > 0) && (
                   <motion.div
