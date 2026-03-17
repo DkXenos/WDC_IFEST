@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
@@ -20,7 +21,7 @@ import { useChatTheme } from "@/components/common/chats/ChatThemeContext";
 export default function NavigationBar() {
   const { 
     containerBg, borderColor, textColor, mutedTextColor,
-    hoverBg
+    hoverBg, isMusicOn, currentSongIndex, PLAYLIST
   } = useChatTheme();
   const leftNavLinks = [
     {
@@ -47,20 +48,7 @@ export default function NavigationBar() {
       href: "/",
     },
   ];
-  const rightNavLinksData = [
-    {
-      title: "",
-      href: "",
-      icon: <FaCirclePlay />,
-      iconClicked: <FaCirclePlay />,
-    },
-    {
-      title: "",
-      href: "",
-      icon: <IoIosNotifications />,
-      iconClicked: <IoIosNotificationsOff />,
-    },
-  ];
+  const currentTrack = PLAYLIST[currentSongIndex];
 
   const [now, setNow] = useState(() => new Date());
 
@@ -92,15 +80,7 @@ export default function NavigationBar() {
     return `${weekday} ${day} ${month} ${hour}.${minute}`;
   }, [now]);
 
-  const [clickedStates, setClickedStates] = useState<boolean[]>(
-    rightNavLinksData.map(() => false)
-  );
-
-  const toggleClicked = (index: number) => {
-    setClickedStates((prev) =>
-      prev.map((state, i) => (i === index ? !state : state))
-    );
-  };
+  const [isNotificationsOff, setIsNotificationsOff] = useState(false);
   return (
     <nav className="fixed top-0 left-0 right-0 z-100 px-3 py-2 sm:px-6 sm:py-2.5">
       <div className={`mx-auto flex w-full max-w-400 items-center justify-between gap-2 rounded-2xl border ${borderColor} ${containerBg} px-3 py-2 shadow-xl backdrop-blur-sm sm:gap-4 sm:px-4`}>
@@ -204,17 +184,52 @@ export default function NavigationBar() {
         ))}
       </div>
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-        {rightNavLinksData.map((link, index) =>
-          link.icon ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <button
               className={`flex items-center gap-2 cursor-pointer rounded-full p-1.5 transition-colors ${hoverBg} ${textColor}`}
-              key={link.title || index}
-              onClick={() => toggleClicked(index)}
+              aria-label="Now Playing"
             >
-              {clickedStates[index] ? link.iconClicked : link.icon}
+              <FaCirclePlay />
             </button>
-          ) : null
-        )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            sideOffset={10}
+            className={`w-72 rounded-2xl border ${borderColor} ${containerBg} p-2 shadow-2xl backdrop-blur-2xl`}
+          >
+            <DropdownMenuLabel className={`px-3 py-2 text-[11px] font-bold uppercase tracking-widest ${mutedTextColor}`}>
+              Now Playing
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className={borderColor} />
+            {isMusicOn && currentTrack ? (
+              <DropdownMenuItem
+                onSelect={(event) => event.preventDefault()}
+                className="cursor-default rounded-xl px-3 py-3"
+              >
+                <div className="flex flex-col gap-1">
+                  <span className={`text-sm font-semibold ${textColor}`}>{currentTrack.title}</span>
+                  <span className="text-xs font-medium text-emerald-500">Currently playing</span>
+                </div>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onSelect={(event) => event.preventDefault()}
+                className="cursor-default rounded-xl px-3 py-3"
+              >
+                <span className={`text-sm font-medium ${mutedTextColor}`}>No music is being played</span>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <button
+          className={`flex items-center gap-2 cursor-pointer rounded-full p-1.5 transition-colors ${hoverBg} ${textColor}`}
+          onClick={() => setIsNotificationsOff((prev) => !prev)}
+          aria-label="Notifications"
+        >
+          {isNotificationsOff ? <IoIosNotificationsOff /> : <IoIosNotifications />}
+        </button>
         <span className={`flex items-center gap-2 text-[11px] sm:text-sm font-semibold ${textColor}`}>
           {wibClock}
         </span>
